@@ -2,154 +2,124 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="application-name" content="QTN Umroh">
-    <meta name="apple-mobile-web-app-title" content="QTN Umroh">
-    <meta name="theme-color" content="#1a5d4a">
-    
+    <meta name="display" content="standalone">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Auva%20Kbihu%20AU%22,%22short_name%22:%22Auva%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a5d4a%22,%22theme_color%22:%22%231a5d4a%22,%22icons%22:[{%22src%22:%22https://img.icons8.com/color/192/kaaba.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}">
+
+    <title>Auva Kbihu AU - Estimasi</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/kaaba.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/kaaba.png">
-
-    <title>Estimasi Biaya Umroh</title>
+    
     <style>
         :root { --primary: #1a5d4a; --accent: #c9a227; --bg: #f4f7f6; --white: #ffffff; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); padding: 15px; margin: 0; }
-        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid var(--primary); }
-        .logo-box { text-align: center; font-size: 50px; margin-bottom: 10px; }
-        h2 { color: var(--primary); text-align: center; margin: 0 0 5px 0; font-size: 1.4rem; }
-        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 15px; margin: 0; color: #333; }
+        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; margin: auto; border-top: 5px solid var(--primary); }
+        .logo-box { text-align: center; font-size: 60px; margin-bottom: 5px; }
+        h2 { color: var(--primary); text-align: center; margin: 0 0 2px 0; font-size: 1.4rem; }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; font-weight: bold; }
+        .section-title { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); margin-top: 15px; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 3px; }
         .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: #333; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: #555; }
         input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: #fafafa; }
         .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
-        .btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        .res-card { background: var(--primary); color: white; padding: 20px; border-radius: 15px; display: none; margin-top: 15px; }
-        .res-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
-        .highlight { color: var(--accent); font-weight: bold; font-size: 1.3rem; }
-        .section-title { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); margin-top: 15px; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+        .btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        .res-card { background: var(--primary); color: white; padding: 20px; border-radius: 15px; display: none; margin: 15px auto; max-width: 500px; box-sizing: border-box; }
+        .res-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+        .highlight { color: var(--accent); font-weight: bold; font-size: 1.4rem; }
+        footer { text-align: center; font-size: 0.7rem; color: #999; margin-top: 20px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="logo-box" style="font-size: 60px;">🕋</div>
-        
-        <h2>Estimasi Biaya Umroh</h2>
-        <p class="subtitle">Rencana Perjalanan & Biaya</p>
-        
-        <div class="section-title">Data Rombongan</div>
-        <div class="row">
-            <div class="input-group">
-                <label>Total Orang</label>
-                <input type="number" id="totJam" value="35">
-            </div>
-            <div class="input-group">
-                <label>Gratis</label>
-                <input type="number" id="jamGratis" value="1">
-            </div>
-            <div class="input-group">
-                <label>Jumlah TL</label>
-                <input type="number" id="numTL" value="1">
-            </div>
-        </div>
+<div class="card">
+ <div class="logo-box">
+    <img src="https://img.icons8.com/color/96/kaaba.png" style="width: 80px; height: 80px;">
+</div>
 
-        <div class="section-title">Komponen Biaya (Per Orang)</div>
-        <div class="input-group">
-            <label>Tiket Maskapai</label>
-            <input type="number" id="cTiket" value="15450000">
-        </div>
-        <div class="input-group">
-            <label>LA / Hotel</label>
-            <input type="number" id="cLA" value="14450000">
-        </div>
-        <div class="row">
-            <div class="input-group">
-                <label>Asuransi</label>
-                <input type="number" id="cAsuransi" value="60000">
-            </div>
-            <div class="input-group">
-                <label>Handling</label>
-                <input type="number" id="cHandling" value="100000">
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-group">
-                <label>Diskon / PIC</label>
-                <input type="number" id="cPIC" value="0">
-            </div>
-            <div class="input-group">
-                <label>Perlengkapan</label>
-                <input type="number" id="cAlat" value="1000000">
-            </div>
-        </div>
-        <div class="input-group">
-            <label>Biaya Aplikasi</label>
-            <input type="number" id="cAplikasi" value="60000">
-        </div>
-
-        <div class="section-title">Margin Kantor</div>
-        <div class="input-group">
-            <label>Target Profit (%)</label>
-            <input type="number" id="profitPct" value="10">
-        </div>
-
-        <button class="btn" onclick="hitungUmroh()">HITUNG ESTIMASI</button>
+    <h2>Estimasi Biaya Umroh</h2>
+    <p class="subtitle">Auva Kbihu AU</p>
+    
+    <div class="section-title">Data Rombongan</div>
+    <div class="row">
+        <div class="input-group"><label>Total Orang</label><input type="number" id="totJam" value="35"></div>
+        <div class="input-group"><label>Gratis</label><input type="number" id="jamGratis" value="1"></div>
+        <div class="input-group"><label>Jumlah TL</label><input type="number" id="numTL" value="1"></div>
     </div>
 
-    <div id="hasil" class="res-card">
-        <h3 style="text-align:center; margin-top:0;">Ringkasan Estimasi</h3>
-        <div class="res-item"><span>Modal Pokok / Orang</span> <b id="outSub"></b></div>
-        <div class="res-item"><span>Total Profit Kotor</span> <span id="outProfKotor"></span></div>
-        <div class="res-item"><span>Beban Biaya TL</span> <span id="outBiayaTL"></span></div>
-        <div class="res-item" style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px;">
-            <span>KEUNTUNGAN BERSIH</span> <b id="outProfBersih" style="color:#64ffda;"></b>
-        </div>
-        
-        <div class="res-item" style="margin-top:15px; border-top: 2px solid var(--accent); padding-top:15px;">
-            <span style="font-weight:bold;">HARGA JUAL KE JAMAAH</span>
-            <span id="outHargaJual" class="highlight"></span>
-        </div>
-        <p style="font-size: 10px; opacity: 0.8; text-align: center; margin-top: 12px;">
-            *Berdasarkan <span id="outJamBayar"></span> orang bayar & <span id="outFoc"></span> orang gratis.
-        </p>
+    <div class="section-title">Komponen Biaya (Per Orang)</div>
+    <div class="input-group"><label>Tiket Maskapai</label><input type="number" id="cTiket" value="15450000"></div>
+    <div class="input-group"><label>LA / Hotel</label><input type="number" id="cLA" value="14450000"></div>
+    <div class="row">
+        <div class="input-group"><label>Asuransi</label><input type="number" id="cAsuransi" value="60000"></div>
+        <div class="input-group"><label>Handling</label><input type="number" id="cHandling" value="100000"></div>
     </div>
+    <div class="row">
+        <div class="input-group"><label>Diskon / PIC</label><input type="number" id="cPIC" value="0"></div>
+        <div class="input-group"><label>Perlengkapan</label><input type="number" id="cAlat" value="1000000"></div>
+    </div>
+    <div class="input-group"><label>Biaya Aplikasi</label><input type="number" id="cAplikasi" value="60000"></div>
 
-    <script>
-        function hitungUmroh() {
-            const nJam = parseInt(document.getElementById('totJam').value) || 0;
-            const nFoc = parseInt(document.getElementById('jamGratis').value) || 0;
-            const nTL = parseInt(document.getElementById('numTL').value) || 0;
-            const pPct = (parseFloat(document.getElementById('profitPct').value) || 0) / 100;
+    <div class="section-title">Margin Kantor</div>
+    <div class="input-group"><label>Target Profit (%)</label><input type="number" id="profitPct" value="10"></div>
 
-            const costs = ['cTiket', 'cLA', 'cAsuransi', 'cHandling', 'cPIC', 'cAlat', 'cAplikasi']
-                .map(id => parseFloat(document.getElementById(id).value) || 0);
-            
-            const subtotalPax = costs.reduce((a, b) => a + b, 0);
-            const totalBiayaGroup = subtotalPax * nJam;
-            const profitKotor = totalBiayaGroup * pPct;
-            const biayaTL = subtotalPax * nTL;
-            const profitBersih = profitKotor - biayaTL;
-            
-            const jamBayar = nJam - nFoc;
-            const totalDeal = totalBiayaGroup + profitKotor;
-            const hargaJualPax = jamBayar > 0 ? (totalDeal / jamBayar) : 0;
+    <button class="btn" onclick="hitungUmroh()">HITUNG ESTIMASI</button>
+</div>
 
-            document.getElementById('hasil').style.display = 'block';
-            document.getElementById('outSub').innerText = "Rp " + subtotalPax.toLocaleString('id-ID');
-            document.getElementById('outProfKotor').innerText = "Rp " + profitKotor.toLocaleString('id-ID');
-            document.getElementById('outBiayaTL').innerText = "Rp " + biayaTL.toLocaleString('id-ID');
-            document.getElementById('outProfBersih').innerText = "Rp " + profitBersih.toLocaleString('id-ID');
-            document.getElementById('outHargaJual').innerText = "Rp " + Math.round(hargaJualPax).toLocaleString('id-ID');
-            document.getElementById('outJamBayar').innerText = jamBayar;
-            document.getElementById('outFoc').innerText = nFoc;
+<div id="hasil" class="res-card">
+    <h3 style="text-align:center; margin-top:0; color: var(--accent);">Ringkasan Estimasi</h3>
+    <div class="res-item"><span>Modal Pokok / Orang</span> <b id="outSub"></b></div>
+    <div class="res-item"><span>Total Profit Kotor</span> <span id="outProfKotor"></span></div>
+    <div class="res-item"><span>Beban Biaya TL</span> <span id="outBiayaTL"></span></div>
+    <div class="res-item" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;">
+        <span>KEUNTUNGAN BERSIH</span> <b id="outProfBersih" style="color:#64ffda;"></b>
+    </div>
+    <div class="res-item" style="margin-top:10px; border-top: 2px solid var(--accent); padding-top:15px;">
+        <span style="font-weight:bold;">HARGA BROSUR</span>
+        <span id="outHargaJual" class="highlight"></span>
+    </div>
+    <p style="font-size: 11px; opacity: 0.8; text-align: center; margin-top: 15px;" id="ket">
+    </p>
+</div>
 
-            document.getElementById('hasil').scrollIntoView({behavior: "smooth"});
-        }
-    </script>
+<footer>&copy; 2026 Auva Kbihu AU</footer>
+
+<script>
+function hitungUmroh() {
+    const nJam = parseInt(document.getElementById('totJam').value) || 0;
+    const nFoc = parseInt(document.getElementById('jamGratis').value) || 0;
+    const nTL = parseInt(document.getElementById('numTL').value) || 0;
+    const pPct = (parseFloat(document.getElementById('profitPct').value) || 0) / 100;
+
+    const costs = ['cTiket', 'cLA', 'cAsuransi', 'cHandling', 'cPIC', 'cAlat', 'cAplikasi']
+        .map(id => parseFloat(document.getElementById(id).value) || 0);
+    
+    const subtotalPax = costs.reduce((a, b) => a + b, 0);
+    const totalBiayaGroup = subtotalPax * nJam;
+    const profitKotor = totalBiayaGroup * pPct;
+    const biayaTL = subtotalPax * nTL;
+    const profitBersih = profitKotor - biayaTL;
+    
+    const jamBayar = nJam - nFoc;
+    const totalDeal = totalBiayaGroup + profitKotor;
+    const hargaJualPax = jamBayar > 0 ? (totalDeal / jamBayar) : 0;
+
+    const f = (n) => "Rp " + Math.ceil(n).toLocaleString('id-ID');
+
+    document.getElementById('hasil').style.display = 'block';
+    document.getElementById('outSub').innerText = f(subtotalPax);
+    document.getElementById('outProfKotor').innerText = f(profitKotor);
+    document.getElementById('outBiayaTL').innerText = f(biayaTL);
+    document.getElementById('outProfBersih').innerText = f(profitBersih);
+    document.getElementById('outHargaJual').innerText = f(hargaJualPax);
+    document.getElementById('ket').innerText = `*Berdasarkan ${jamBayar} orang bayar & ${nFoc} orang gratis.`;
+
+    document.getElementById('hasil').scrollIntoView({behavior: "smooth"});
+}
+</script>
 </body>
 </html>
