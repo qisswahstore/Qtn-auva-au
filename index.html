@@ -228,16 +228,276 @@ function resetData() {
     }
 }
 
+// ============================================
+// FUNGSI DOWNLOAD EXCEL - VERSI LENGKAP
+// ============================================
 function downloadExcel(){
     if(dataKas.length === 0) return alert("Data kosong!");
     let namaGrup = prompt("Masukkan Nama Rombongan:", "Rombongan_Umroh");
     if(!namaGrup) return;
-    const ws = XLSX.utils.json_to_sheet(dataKas.map(i=>({
-        Tanggal: i.tgl, Keterangan: i.ket, Tipe: i.tipe.toUpperCase(), Nominal: i.nom
-    })));
+    
+    // Ambil data estimasi dari input form
+    const nJam = parseInt(document.getElementById('totJam').value) || 0;
+    const nFoc = parseInt(document.getElementById('jamGratis').value) || 0;
+    const nTL = parseInt(document.getElementById('numTL').value) || 0;
+    const profitPct = (parseFloat(document.getElementById('profitPct').value) || 0);
+    
+    // Hitung estimasi biaya
+    const ids = ['cTiket','cLA','cAsuransi','cHandling','cPIC','cAlat','cAplikasi','cLain'];
+    const sub = ids.map(id => parseFloat(document.getElementById(id).value) || 0).reduce((a,b) => a+b, 0);
+    const profitKotor = (sub * nJam) * (profitPct/100);
+    const biayaTL = sub * nTL;
+    const bersih = profitKotor - biayaTL;
+    const jual = nJam > nFoc ? ((sub * nJam) + profitKotor) / (nJam - nFoc) : 0;
+    const totalOmzetEst = jual * (nJam - nFoc);
+    const totalBiayaEst = sub * nJam;
+    
+    // Hitung realisasi dari data kas
+    let totalMasuk = 0, totalKeluar = 0;
+    let transaksiMasuk = 0, transaksiKeluar = 0;
+    let kategoriKeluar = {};
+    
+    dataKas.forEach(i => {
+        if(i.tipe === 'masuk') {
+            totalMasuk += i.nom;
+            transaksiMasuk++;
+        } else {
+            totalKeluar += i.nom;
+            transaksiKeluar++;
+            // Kategorikan pengeluaran berdasarkan keyword
+            let kat = 'Lain-lain';
+            let ket = i.ket.toLowerCase();
+            if(ket.includes('tiket') || ket.includes('pesawat') || ket.includes('flight')) kat = 'Transportasi';
+            else if(ket.includes('hotel') || ket.includes('la') || ket.includes('mekah') || ket.includes('madinah')) kat = 'Akomodasi';
+            else if(ket.includes('perlengkapan') || ket.includes('alat') || ket.includes('koper') || ket.includes('baju')) kat = 'Perlengkapan';
+            else if(ket.includes('handling') || ket.includes('bandara')) kat = 'Handling';
+            else if(ket.includes('asuransi')) kat = 'Asuransi';
+            else if(ket.includes('aplikasi') || ket.includes('app')) kat = 'Aplikasi';
+            else if(ket.includes('tl') || ket.includes('pembimbing') || ket.includes('mutawif')) kat = 'Biaya TL';
+            else if(ket.includes('makan') || ket.includes('catering') || ket.includes(' konsumsi')) kat = 'Konsumsi';
+            else if(ket.includes('bus') || ket.includes('transport') || ket.includes('mobil')) kat = 'Transport Lokal';
+            else kat = 'Operasional';
+            
+            kategoriKeluar[kat] = (kategoriKeluar[kat] || 0) + i.nom;
+        }
+    });
+    
+    let saldoAkhir = totalMasuk - totalKeluar;
+    let tanggalAwal = dataKas.length > 0 ? dataKas[0].tgl : '-';
+    let tanggalAkhir = dataKas.length > 0 ? dataKas[dataKas.length-1].tgl : '-';
+    let tglCetak = new Date().toLocaleDateString('id-ID');
+    
+    // ============================================
+    // SHEET 1: DETAIL TRANSAKSI
+    // ============================================
+    const sheet1Data = [];
+    
+    // Header info
+    sheet1Data.push({ 'A': '🕌 AUVA KBIHU AU - LAPORAN DETAIL TRANSAKSI' });
+    sheet1Data.push({ 'A': 'Nama Rombongan: ' + namaGrup });
+    sheet1Data.push({ 'A': 'Periode: ' + tanggalAwal + ' s/d ' + tanggalAkhir });
+    sheet1Data.push({ 'A': 'Total Jamaah: ' + nJam + ' Pax (' + nFoc + ' Gratis, ' + nTL + ' TL)' });
+    sheet1Data.push({ 'A': 'Dicetak: ' + tglCetak });
+    sheet1Data.push({ 'A': '' }); // Baris kosong
+    
+    // Header tabel
+    sheet1Data.push({
+        'No': 'No',
+        'Tanggal': 'Tanggal',
+        'Keterangan': 'Keterangan',
+        'Kategori': 'Kategori',
+        'Tipe': 'Tipe',
+        'Nominal': 'Nominal (Rp)'
+    });
+    
+    // Data transaksi
+    dataKas.forEach((i, idx) => {
+        let kat = '-';
+        if(i.tipe === 'keluar') {
+            let ket = i.ket.toLowerCase();
+            if(ket.includes('tiket') || ket.includes('pesawat') || ket.includes('flight')) kat = 'Transportasi';
+            else if(ket.includes('hotel') || ket.includes('la') || ket.includes('mekah') || ket.includes('madinah')) kat = 'Akomodasi';
+            else if(ket.includes('perlengkapan') || ket.includes('alat') || ket.includes('koper') || ket.includes('baju')) kat = 'Perlengkapan';
+            else if(ket.includes('handling') || ket.includes('bandara')) kat = 'Handling';
+            else if(ket.includes('asuransi')) kat = 'Asuransi';
+            else if(ket.includes('aplikasi') || ket.includes('app')) kat = 'Aplikasi';
+            else if(ket.includes('tl') || ket.includes('pembimbing') || ket.includes('mutawif')) kat = 'Biaya TL';
+            else if(ket.includes('makan') || ket.includes('catering') || ket.includes('konsumsi')) kat = 'Konsumsi';
+            else if(ket.includes('bus') || ket.includes('transport') || ket.includes('mobil')) kat = 'Transport Lokal';
+            else kat = 'Operasional';
+        } else {
+            kat = 'Pemasukan';
+        }
+        
+        sheet1Data.push({
+            'No': idx + 1,
+            'Tanggal': i.tgl,
+            'Keterangan': i.ket,
+            'Kategori': kat,
+            'Tipe': i.tipe.toUpperCase(),
+            'Nominal': i.nom
+        });
+    });
+    
+    // Baris kosong + summary
+    sheet1Data.push({ 'No': '', 'Tanggal': '', 'Keterangan': '', 'Kategori': '', 'Tipe': '', 'Nominal': '' });
+    sheet1Data.push({ 
+        'No': '', 
+        'Tanggal': '', 
+        'Keterangan': 'TOTAL MASUK', 
+        'Kategori': '', 
+        'Tipe': '', 
+        'Nominal': totalMasuk 
+    });
+    sheet1Data.push({ 
+        'No': '', 
+        'Tanggal': '', 
+        'Keterangan': 'TOTAL KELUAR', 
+        'Kategori': '', 
+        'Tipe': '', 
+        'Nominal': totalKeluar 
+    });
+    sheet1Data.push({ 
+        'No': '', 
+        'Tanggal': '', 
+        'Keterangan': 'SALDO AKHIR', 
+        'Kategori': '', 
+        'Tipe': '', 
+        'Nominal': saldoAkhir 
+    });
+    
+    // ============================================
+    // SHEET 2: REKAPAN
+    // ============================================
+    const sheet2Data = [];
+    
+    sheet2Data.push({ 'A': '🕌 AUVA KBIHU AU - REKAPAN LAPORAN' });
+    sheet2Data.push({ 'A': '' });
+    sheet2Data.push({ 'Label': 'Nama Rombongan', 'Value': namaGrup });
+    sheet2Data.push({ 'Label': 'Periode', 'Value': tanggalAwal + ' s/d ' + tanggalAkhir });
+    sheet2Data.push({ 'Label': 'Total Jamaah', 'Value': nJam + ' Pax (' + nFoc + ' Gratis)' });
+    sheet2Data.push({ 'Label': 'Jumlah TL', 'Value': nTL + ' orang' });
+    sheet2Data.push({ 'Label': 'Dibuat oleh', 'Value': 'Admin Auva' });
+    sheet2Data.push({ 'Label': 'Tanggal Cetak', 'Value': tglCetak });
+    sheet2Data.push({ 'A': '' });
+    sheet2Data.push({ 'A': 'RINGKASAN KEUANGAN' });
+    sheet2Data.push({ 'Label': 'Total Pemasukan', 'Value': totalMasuk });
+    sheet2Data.push({ 'Label': 'Total Pengeluaran', 'Value': totalKeluar });
+    sheet2Data.push({ 'Label': 'Selisih (Profit)', 'Value': saldoAkhir });
+    sheet2Data.push({ 'A': '' });
+    sheet2Data.push({ 'Label': 'Jumlah Transaksi Masuk', 'Value': transaksiMasuk + ' kali' });
+    sheet2Data.push({ 'Label': 'Jumlah Transaksi Keluar', 'Value': transaksiKeluar + ' kali' });
+    sheet2Data.push({ 'Label': 'Rata-rata per Transaksi', 'Value': dataKas.length > 0 ? Math.round((totalMasuk + totalKeluar) / dataKas.length) : 0 });
+    sheet2Data.push({ 'Label': 'Status Keuangan', 'Value': saldoAkhir >= 0 ? '✅ SURPLUS' : '❌ DEFISIT' });
+    
+    // Detail pengeluaran per kategori
+    sheet2Data.push({ 'A': '' });
+    sheet2Data.push({ 'A': 'DETAIL PENGELUARAN PER KATEGORI' });
+    
+    const urutanKategori = ['Transportasi', 'Akomodasi', 'Perlengkapan', 'Handling', 'Asuransi', 'Aplikasi', 'Biaya TL', 'Konsumsi', 'Transport Lokal', 'Operasional', 'Lain-lain'];
+    urutanKategori.forEach(kat => {
+        if(kategoriKeluar[kat]) {
+            sheet2Data.push({ 'Label': kat, 'Value': kategoriKeluar[kat] });
+        }
+    });
+    sheet2Data.push({ 'Label': 'TOTAL PENGELUARAN', 'Value': totalKeluar });
+    
+    // ============================================
+    // SHEET 3: ESTIMASI VS REALISASI
+    // ============================================
+    const sheet3Data = [];
+    
+    // Hitung realisasi per item
+    const hargaBrosurReal = (nJam > nFoc) ? Math.round(totalMasuk / (nJam - nFoc)) : 0;
+    const totalOmzetReal = totalMasuk;
+    const modalPokokReal = nJam > 0 ? Math.round(totalKeluar / nJam) : 0;
+    const totalBiayaReal = totalKeluar;
+    const profitKotorReal = totalMasuk - totalBiayaEst; // Omzet - (modal x jumlah jamaah)
+    const biayaTLReal = kategoriKeluar['Biaya TL'] || 0;
+    const profitBersihReal = saldoAkhir;
+    
+    sheet3Data.push({ 'A': '🕌 AUVA KBIHU AU - PERBANDINGAN ESTIMASI vs REALISASI' });
+    sheet3Data.push({ 'A': 'Nama Rombongan: ' + namaGrup });
+    sheet3Data.push({ 'A': '' });
+    sheet3Data.push({ 
+        'Keterangan': 'Keterangan', 
+        'Estimasi': 'Estimasi (Rp)', 
+        'Realisasi': 'Realisasi (Rp)', 
+        'Selisih': 'Selisih (Rp)', 
+        'Ket': 'Keterangan' 
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Harga Brosur per Pax', 
+        'Estimasi': Math.round(jual), 
+        'Realisasi': hargaBrosurReal, 
+        'Selisih': hargaBrosurReal - Math.round(jual),
+        'Ket': (hargaBrosurReal >= Math.round(jual)) ? '✅ Lebih' : '❌ Kurang'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Total Omzet Grup', 
+        'Estimasi': Math.round(totalOmzetEst), 
+        'Realisasi': totalOmzetReal, 
+        'Selisih': totalOmzetReal - Math.round(totalOmzetEst),
+        'Ket': (totalOmzetReal >= totalOmzetEst) ? '✅ Lebih' : '❌ Kurang'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Modal Pokok per Pax', 
+        'Estimasi': Math.round(sub), 
+        'Realisasi': modalPokokReal, 
+        'Selisih': modalPokokReal - Math.round(sub),
+        'Ket': (modalPokokReal <= Math.round(sub)) ? '✅ Efisien' : '⚠️ Over'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Total Biaya Operasional', 
+        'Estimasi': Math.round(totalBiayaEst), 
+        'Realisasi': totalBiayaReal, 
+        'Selisih': totalBiayaReal - Math.round(totalBiayaEst),
+        'Ket': (totalBiayaReal <= totalBiayaEst) ? '✅ Sesuai' : '⚠️ Over'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Profit Kotor Grup', 
+        'Estimasi': Math.round(profitKotor), 
+        'Realisasi': profitKotorReal, 
+        'Selisih': profitKotorReal - Math.round(profitKotor),
+        'Ket': (profitKotorReal >= profitKotor) ? '✅ Target' : '❌ Kurang'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'Biaya TL', 
+        'Estimasi': Math.round(biayaTL), 
+        'Realisasi': biayaTLReal, 
+        'Selisih': biayaTLReal - Math.round(biayaTL),
+        'Ket': (biayaTLReal <= biayaTL) ? '✅ Sesuai' : '⚠️ Over'
+    });
+    sheet3Data.push({ 
+        'Keterangan': 'PROFIT BERSIH', 
+        'Estimasi': Math.round(bersih), 
+        'Realisasi': profitBersihReal, 
+        'Selisih': profitBersihReal - Math.round(bersih),
+        'Ket': (profitBersihReal >= bersih) ? '🎯 Target Tercapai' : '⚠️ Perhatian'
+    });
+    
+    // ============================================
+    // CREATE EXCEL FILE
+    // ============================================
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Kas");
-    XLSX.writeFile(wb, `${namaGrup}.xlsx`);
+    
+    // Sheet 1
+    const ws1 = XLSX.utils.json_to_sheet(sheet1Data);
+    // Set column widths
+    ws1['!cols'] = [{wch:5}, {wch:12}, {wch:35}, {wch:15}, {wch:10}, {wch:20}];
+    XLSX.utils.book_append_sheet(wb, ws1, "Detail Transaksi");
+    
+    // Sheet 2
+    const ws2 = XLSX.utils.json_to_sheet(sheet2Data);
+    ws2['!cols'] = [{wch:30}, {wch:25}];
+    XLSX.utils.book_append_sheet(wb, ws2, "Rekapan");
+    
+    // Sheet 3
+    const ws3 = XLSX.utils.json_to_sheet(sheet3Data);
+    ws3['!cols'] = [{wch:25}, {wch:18}, {wch:18}, {wch:15}, {wch:20}];
+    XLSX.utils.book_append_sheet(wb, ws3, "Estimasi vs Real");
+    
+    XLSX.writeFile(wb, namaGrup + '_Laporan_Lengkap.xlsx');
 }
 </script>
 </body>
