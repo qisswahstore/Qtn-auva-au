@@ -153,7 +153,6 @@ function gantiPIN(){
 }
 
 function resetPIN(){
-    // Gunakan kode admin rahasia agar tidak sembarang orang bisa reset
     let master = prompt("Masukkan KODE ADMIN untuk reset (Default: 0000):");
     if(master === "0000"){
         let baru = prompt("Masukkan PIN Baru:");
@@ -201,9 +200,23 @@ function hitungUmroh(){
         <div class="res-item" style="color:#2ecc71"><span>PROFIT BERSIH</span><b>${f(bersih)}</b></div>
         <div class="res-item" style="border-top:2px solid var(--accent); margin-top:10px; padding-top:10px">
             <span style="font-weight:bold">HARGA BROSUR</span><span class="highlight">${f(jual)}</span>
-        </div>`;
+        </div>
+        <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;">📋 SALIN RINGKASAN HARGA</button>`;
     hasil.style.display='block';
     hasil.scrollIntoView({behavior: "smooth"});
+}
+
+// --- FUNGSI SALIN KE WA ---
+function salinRingkasan() {
+    const totalPax = document.getElementById('totJam').value;
+    const hrg = document.querySelector('.highlight').innerText;
+    const teks = `*Ringkasan Estimasi Paket*\n--------------------------\n📍 *Auva Kbihu AU*\n👥 Total Jamaah: ${totalPax}\n💰 Harga per Pax: *${hrg}*\n--------------------------\n_Silakan hubungi admin untuk detail._`;
+    
+    navigator.clipboard.writeText(teks).then(() => {
+        alert("Ringkasan Harga telah disalin! Silakan Paste ke WhatsApp.");
+    }).catch(err => {
+        alert("Gagal menyalin: " + err);
+    });
 }
 
 // --- FUNGSI KAS REAL ---
@@ -252,13 +265,10 @@ function downloadExcel() {
     if(!namaGrup) return;
 
     const wb = XLSX.utils.book_new();
-    
-    // Sheet 1: Detail Transaksi
     const ws1Data = dataKas.map(i => ({ Tanggal: i.tgl, Keterangan: i.ket, Tipe: i.tipe.toUpperCase(), Nominal: i.nom }));
     const ws1 = XLSX.utils.json_to_sheet(ws1Data);
     XLSX.utils.book_append_sheet(wb, ws1, "Detail Transaksi");
 
-    // Sheet 2: Ringkasan
     let inTotal = dataKas.filter(i=>i.tipe==='masuk').reduce((a,b)=>a+b.nom,0);
     let outTotal = dataKas.filter(i=>i.tipe==='keluar').reduce((a,b)=>a+b.nom,0);
     const ws2Data = [{ Pemasukan: inTotal, Pengeluaran: outTotal, Saldo: inTotal-outTotal }];
