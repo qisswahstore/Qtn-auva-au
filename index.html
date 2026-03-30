@@ -114,10 +114,10 @@
         <button class="btn" onclick="tambah()" style="background:var(--accent)">TAMBAH TRANSAKSI</button>
         <div class="summary-real" id="summary"></div>
         <div class="table-container"><table><thead><tr><th>Tgl</th><th>Ket</th><th>Nom</th><th></th></tr></thead><tbody id="bodyKas"></tbody></table></div>
-        <button class="btn" onclick="downloadExcel()" style="background:#27ae60">💾 DOWNLOAD LAPORAN (.xlsx)</button>
-        <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">🗑️ KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)</button>
-        <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">🔑 GANTI PIN</button>
-        <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">🔑 RESET PIN (LUPA)</button>
+        <button class="btn" onclick="downloadExcel()" style="background:#27ae60">ðŸ’¾ DOWNLOAD LAPORAN (.xlsx)</button>
+        <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">ðŸ—‘ï¸ KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)</button>
+        <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">ðŸ”‘ GANTI PIN</button>
+        <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">ðŸ”‘ RESET PIN (LUPA)</button>
     </div>
 </div>
 
@@ -198,10 +198,13 @@ function hitungUmroh(){
         <div class="res-item"><span>Profit Kotor Grup</span><span>${f(profitKotor)}</span></div>
         <div class="res-item"><span>Biaya TL</span><span>${f(biayaTL)}</span></div>
         <div class="res-item" style="color:#2ecc71"><span>PROFIT BERSIH</span><b>${f(bersih)}</b></div>
-        <div class="res-item" style="border-top:2px solid var(--accent); margin-top:10px; padding-top:10px">
+        <div class="res-item" style="border-top:2px solid var(--accent); margin-top:10px; padding-top:10px; flex-direction: column; align-items: center;">
             <span style="font-weight:bold">HARGA BROSUR</span><span class="highlight">${f(jual)}</span>
+            <p style="font-size: 10px; color: #bdc3c7; text-align: center; margin-top: 5px; margin-bottom: 0;">
+                *Berdasarkan ${nJam - nFoc} jamaah bayar dan ${nFoc} gratis
+            </p>
         </div>
-        <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;">📋 SALIN RINGKASAN HARGA</button>`;
+        <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;">ðŸ“‹ SALIN RINGKASAN HARGA</button>`;
     hasil.style.display='block';
     hasil.scrollIntoView({behavior: "smooth"});
 }
@@ -210,7 +213,7 @@ function hitungUmroh(){
 function salinRingkasan() {
     const totalPax = document.getElementById('totJam').value;
     const hrg = document.querySelector('.highlight').innerText;
-    const teks = `*Ringkasan Estimasi Paket*\n--------------------------\n📍 *Auva Kbihu AU*\n👥 Total Jamaah: ${totalPax}\n💰 Harga per Pax: *${hrg}*\n--------------------------\n_Silakan hubungi admin untuk detail._`;
+    const teks = `*Ringkasan Estimasi Paket*\n--------------------------\nðŸ“ *Auva Kbihu AU*\nðŸ‘¥ Total Jamaah: ${totalPax}\nðŸ’° Harga per Pax: *${hrg}*\n--------------------------\n_Silakan hubungi admin untuk detail._`;
     
     navigator.clipboard.writeText(teks).then(() => {
         alert("Ringkasan Harga telah disalin! Silakan Paste ke WhatsApp.");
@@ -241,7 +244,7 @@ function render(){
     let masuk=0, keluar=0;
     dataKas.forEach(i=>{
         if(i.tipe==='masuk') masuk+=i.nom; else keluar+=i.nom;
-        body.innerHTML+=`<tr><td>${i.tgl}</td><td>${i.ket}</td><td class="${i.tipe==='masuk'?'txt-in':'txt-out'}">${i.nom.toLocaleString('id-ID')}</td><td><button class="btn-del" onclick="hapus(${i.id})">×</button></td></tr>`;
+        body.innerHTML+=`<tr><td>${i.tgl}</td><td>${i.ket}</td><td class="${i.tipe==='masuk'?'txt-in':'txt-out'}">${i.nom.toLocaleString('id-ID')}</td><td><button class="btn-del" onclick="hapus(${i.id})">Ã—</button></td></tr>`;
     });
     document.getElementById('summary').innerHTML=`<b>Saldo Akhir: Rp ${(masuk-keluar).toLocaleString('id-ID')}</b>`;
 }
