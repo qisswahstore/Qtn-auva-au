@@ -6,61 +6,505 @@
     <meta name="theme-color" content="#1a5d4a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Auva">
+    
     <title>Auva Kbihu AU</title>
 
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Auva%20Kbihu%20AU%22,%22short_name%22:%22Auva%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a5d4a%22,%22theme_color%22:%22%231a5d4a%22,%22icons%22:[{%22src%22:%22https://img.icons8.com/color/192/kaaba.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}">
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
     <link rel="icon" href="https://img.icons8.com/color/96/kaaba.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/kaaba.png">
     
-    <!-- FontAwesome CDN - Ditambahkan untuk ikon -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    
+    <!-- SheetJS untuk Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        :root { --primary: #1a5d4a; --accent: #c9a227; --bg: #f4f7f6; --white: #ffffff; --red: #e74c3c; --green: #2ecc71; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); padding: 10px; margin: 0; color: #333; }
-        .tab-menu { display: flex; max-width: 500px; margin: 0 auto 15px; background: #ddd; border-radius: 10px; overflow: hidden; }
-        .tab-btn { flex: 1; padding: 15px; border: none; cursor: pointer; font-weight: bold; background: #ddd; color: #666; font-size: 14px; }
-        .tab-btn.active { background: var(--primary); color: white; }
-        .card { background: var(--white); border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; margin: auto; border-top: 5px solid var(--primary); box-sizing: border-box; }
+        :root { 
+            --primary: #1a5d4a; 
+            --accent: #c9a227; 
+            --bg: #f4f7f6; 
+            --white: #ffffff; 
+            --red: #e74c3c; 
+            --green: #2ecc71; 
+        }
+        
+        * { -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg); 
+            padding: 10px; 
+            margin: 0; 
+            color: #333; 
+            overscroll-behavior: none;
+        }
+        
+        /* Install Banner */
+        .install-banner {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            z-index: 10000;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .install-banner.show { display: flex; }
+        
+        .install-banner .text { flex: 1; }
+        .install-banner h4 { margin: 0 0 5px 0; }
+        .install-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
+        
+        .install-banner .btn-install {
+            background: var(--accent);
+            color: #1a5d4a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .install-banner .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* Update Available Banner */
+        .update-banner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--accent);
+            color: #1a5d4a;
+            padding: 12px 20px;
+            z-index: 10001;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .update-banner.show { display: block; }
+        
+        .update-banner button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .tab-menu { 
+            display: flex; 
+            max-width: 500px; 
+            margin: 0 auto 15px; 
+            background: #ddd; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        
+        .tab-btn { 
+            flex: 1; 
+            padding: 15px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            background: #ddd; 
+            color: #666; 
+            font-size: 14px; 
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active { 
+            background: var(--primary); 
+            color: white; 
+        }
+        
+        .card { 
+            background: var(--white); 
+            border-radius: 15px; 
+            padding: 20px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            max-width: 500px; 
+            margin: auto; 
+            border-top: 5px solid var(--primary); 
+            box-sizing: border-box; 
+        }
+        
         .logo-box { text-align: center; margin-bottom: 10px; }
-        h2 { color: var(--primary); text-align: center; margin: 0; font-size: 1.4rem; }
-        p.subtitle { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 20px; font-weight: bold; }
-        .section-title { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); margin-top: 15px; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+        
+        h2 { 
+            color: var(--primary); 
+            text-align: center; 
+            margin: 0; 
+            font-size: 1.4rem; 
+        }
+        
+        p.subtitle { 
+            text-align: center; 
+            color: #666; 
+            font-size: 0.9rem; 
+            margin-bottom: 20px; 
+            font-weight: bold; 
+        }
+        
+        .section-title { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            color: var(--accent); 
+            margin-top: 15px; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 3px; 
+        }
+        
         .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: #555; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; box-sizing: border-box; background: #fafafa; }
+        
+        label { 
+            display: block; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+            color: #555; 
+        }
+        
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+            background: #fafafa; 
+            -webkit-appearance: none;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+        
         .row { display: flex; gap: 10px; margin-bottom: 5px; }
         .row > div { flex: 1; }
-        .btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .res-card { background: var(--primary); color: white; padding: 20px; border-radius: 15px; display: none; margin: 15px auto; max-width: 500px; box-sizing: border-box; }
-        .res-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
-        .highlight { color: var(--accent); font-weight: bold; font-size: 1.4rem; }
-        .summary-real { background: #2c3e50; color: white; padding: 15px; border-radius: 10px; margin-top: 15px; }
-        .table-container { overflow-x: auto; margin-top: 20px; background: white; border-radius: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { background: #eee; padding: 10px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
+        
+        .btn { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .res-card { 
+            background: var(--primary); 
+            color: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            display: none; 
+            margin: 15px auto; 
+            max-width: 500px; 
+            box-sizing: border-box; 
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .res-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            font-size: 0.9rem; 
+        }
+        
+        .highlight { 
+            color: var(--accent); 
+            font-weight: bold; 
+            font-size: 1.4rem; 
+        }
+        
+        .summary-real { 
+            background: #2c3e50; 
+            color: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-top: 15px; 
+        }
+        
+        .table-container { 
+            overflow-x: auto; 
+            margin-top: 20px; 
+            background: white; 
+            border-radius: 10px; 
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 12px; 
+        }
+        
+        th { 
+            background: #eee; 
+            padding: 10px; 
+            text-align: left; 
+            position: sticky;
+            top: 0;
+        }
+        
+        td { 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+        }
+        
         .txt-in { color: var(--green); font-weight: bold; }
         .txt-out { color: var(--red); font-weight: bold; }
-        .btn-del { color: var(--red); border: none; background: none; font-weight: bold; font-size: 18px; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 5px; transition: background 0.2s; }
+        
+        .btn-del { 
+            color: var(--red); 
+            border: none; 
+            background: none; 
+            font-weight: bold; 
+            font-size: 18px; 
+            cursor: pointer; 
+            width: 30px; 
+            height: 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 5px; 
+            transition: background 0.2s; 
+        }
+        
         .btn-del:hover { background: rgba(231, 76, 60, 0.1); }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        footer { text-align: center; font-size: 0.7rem; color: #999; margin-top: 20px; padding-bottom: 20px; }
-        #loginPage { position:fixed; inset:0; background:var(--primary); display:flex; justify-content:center; align-items:center; z-index:9999; }
-        .pin-box { background:white; padding:25px; border-radius:15px; width:85%; max-width:300px; text-align:center; }
+        
+        footer { 
+            text-align: center; 
+            font-size: 0.7rem; 
+            color: #999; 
+            margin-top: 20px; 
+            padding-bottom: 100px; 
+        }
+        
+        #loginPage { 
+            position:fixed; 
+            inset:0; 
+            background:var(--primary); 
+            display:flex; 
+            justify-content:center; 
+            align-items:center; 
+            z-index:9999; 
+        }
+        
+        .pin-box { 
+            background:white; 
+            padding:25px; 
+            border-radius:15px; 
+            width:85%; 
+            max-width:300px; 
+            text-align:center; 
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10002;
+            transition: transform 0.3s;
+        }
+        
+        .connection-status.offline {
+            background: var(--red);
+            color: white;
+            transform: translateY(0);
+        }
+        
+        .connection-status.online {
+            background: var(--green);
+            color: white;
+            transform: translateY(-100%);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        .spinner.show { display: inline-block; }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 10003;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Manual Copy Overlay */
+        .copy-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 10004;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .copy-overlay.show { display: flex; }
+        
+        .copy-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .copy-box h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .copy-box textarea {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            resize: none;
+            box-sizing: border-box;
+        }
+        
+        .copy-box .btn-close-overlay {
+            background: var(--red);
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body onload="initApp()">
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status online">
+        <i class="fas fa-wifi"></i> <span id="connText">Online</span>
+    </div>
+    
+    <!-- Update Available Banner -->
+    <div id="updateBanner" class="update-banner">
+        Update tersedia! <button onclick="updateApp()">Update Sekarang</button>
+    </div>
+    
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner">
+        <div class="text">
+            <h4><i class="fas fa-kaaba"></i> Install Auva</h4>
+            <p>Tambahkan ke layar utama untuk akses cepat</p>
+        </div>
+        <button class="btn-install" onclick="installApp()">Install</button>
+        <button class="btn-close" onclick="closeInstallBanner()">&times;</button>
+    </div>
+
+    <!-- Manual Copy Overlay -->
+    <div id="copyOverlay" class="copy-overlay">
+        <div class="copy-box">
+            <h3><i class="fas fa-copy"></i> Salin Manual</h3>
+            <p style="font-size: 12px; color: #666;">Tekan dan tahan text di bawah, lalu pilih "Salin":</p>
+            <textarea id="manualCopyText" readonly></textarea>
+            <button class="btn btn-close-overlay" onclick="closeCopyOverlay()">
+                <i class="fas fa-times"></i> Tutup
+            </button>
+        </div>
+    </div>
+
     <div id="loginPage">
         <div class="pin-box">
             <img src="https://img.icons8.com/color/96/kaaba.png" style="width:60px; margin-bottom:10px;">
             <h3>Keamanan Auva</h3>
             <input type="password" id="pinInput" placeholder="Masukkan PIN" style="text-align:center; font-size: 20px; letter-spacing: 5px;">
-            <button onclick="cekPIN()" class="btn"><i class="fas fa-lock"></i> MASUK</button>
+            <button onclick="cekPIN()" class="btn">
+                <div class="spinner" id="loginSpinner"></div>
+                <span id="loginText"><i class="fas fa-lock"></i> MASUK</span>
+            </button>
         </div>
     </div>
 
@@ -106,7 +550,9 @@
 
             <div class="section-title">Margin</div>
             <div class="input-group"><label>Profit (%)</label><input type="number" id="profitPct" value="0"></div>
-            <button class="btn" onclick="hitungUmroh()"><i class="fas fa-calculator"></i> HITUNG ESTIMASI</button>
+            <button class="btn" onclick="hitungUmroh()">
+                <i class="fas fa-calculator"></i> HITUNG ESTIMASI
+            </button>
         </div>
         <div id="hasil" class="res-card"></div>
     </div>
@@ -120,45 +566,213 @@
                 <div style="flex:2"><input id="nomReal" type="number" placeholder="Nominal Rp"></div>
                 <div style="flex:1"><select id="tipeReal"><option value="masuk">In</option><option value="keluar">Out</option></select></div>
             </div>
-            <button class="btn" onclick="tambah()" style="background:var(--accent)"><i class="fas fa-plus-circle"></i> TAMBAH TRANSAKSI</button>
+            <button class="btn" onclick="tambah()" style="background:var(--accent)">
+                <i class="fas fa-plus-circle"></i> TAMBAH TRANSAKSI
+            </button>
             <div class="summary-real" id="summary"></div>
-            <div class="table-container"><table><thead><tr><th>Tgl</th><th>Ket</th><th>Nom</th><th></th></tr></thead><tbody id="bodyKas"></tbody></table></div>
-            <button class="btn" onclick="downloadExcel()" style="background:#27ae60"><i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)</button>
-            <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;"><i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)</button>
-            <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;"><i class="fas fa-key"></i> GANTI PIN</button>
-            <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;"><i class="fas fa-undo"></i> RESET PIN (LUPA)</button>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Tgl</th><th>Ket</th><th>Nom</th><th></th></tr>
+                    </thead>
+                    <tbody id="bodyKas"></tbody>
+                </table>
+            </div>
+            <button class="btn" onclick="downloadExcel()" style="background:#27ae60">
+                <i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)
+            </button>
+            <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">
+                <i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)
+            </button>
+            <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">
+                <i class="fas fa-key"></i> GANTI PIN
+            </button>
+            <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">
+                <i class="fas fa-undo"></i> RESET PIN (LUPA)
+            </button>
         </div>
     </div>
 
     <footer>&copy; 2026 Auva Kbihu AU</footer>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
 
 <script>
 let dataKas=[];
+let deferredPrompt = null;
+let lastCalculatedText = '';
+
+// --- PWA FUNCTIONS ---
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then((registration) => {
+                console.log('SW registered:', registration);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateBanner();
+                        }
+                    });
+                });
+            })
+            .catch((error) => {
+                console.log('SW registration failed:', error);
+            });
+    });
+}
+
+// Listen for beforeinstallprompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBanner();
+});
+
+// Check if app is installed
+window.addEventListener('appinstalled', () => {
+    console.log('Auva was installed');
+    deferredPrompt = null;
+    hideInstallBanner();
+    showToast('Auva berhasil di-install!');
+});
+
+// Online/Offline detection
+window.addEventListener('online', () => updateConnectionStatus(true));
+window.addEventListener('offline', () => updateConnectionStatus(false));
+
+function updateConnectionStatus(online) {
+    const status = document.getElementById('connectionStatus');
+    const text = document.getElementById('connText');
+    
+    if (online) {
+        status.className = 'connection-status online';
+        text.textContent = 'Online';
+        setTimeout(() => {
+            status.style.transform = 'translateY(-100%)';
+        }, 2000);
+    } else {
+        status.style.transform = 'translateY(0)';
+        status.className = 'connection-status offline';
+        text.textContent = 'Offline Mode - Data tersimpan lokal';
+    }
+}
+
+function showInstallBanner() {
+    // Only show if not already installed
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('installBanner').classList.add('show');
+    }
+}
+
+function hideInstallBanner() {
+    document.getElementById('installBanner').classList.remove('show');
+}
+
+function closeInstallBanner() {
+    hideInstallBanner();
+    localStorage.setItem('auva_install_dismissed', Date.now());
+}
+
+async function installApp() {
+    if (!deferredPrompt) {
+        // If no native prompt available (iOS Safari), show instructions
+        showToast('Gunakan "Add to Home Screen" dari menu browser');
+        return;
+    }
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+        console.log('User accepted install');
+    }
+    deferredPrompt = null;
+}
+
+function showUpdateBanner() {
+    document.getElementById('updateBanner').classList.add('show');
+}
+
+function updateApp() {
+    window.location.reload();
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
 
 // --- FUNGSI KEAMANAN ---
 function initApp(){
+    // Check connection status
+    updateConnectionStatus(navigator.onLine);
+    
     let savedPIN=localStorage.getItem('auva_pin');
     if(!savedPIN){
-        let p=prompt("Buat PIN Keamanan Baru:");
-        localStorage.setItem('auva_pin', p || '1234');
+        let p=prompt("Buat PIN Keamanan Baru (4 digit):");
+        if (p && p.length >= 4) {
+            localStorage.setItem('auva_pin', p);
+            showToast('PIN berhasil dibuat!');
+        } else {
+            localStorage.setItem('auva_pin', '1234');
+            showToast('PIN default: 1234');
+        }
     }
     let d=localStorage.getItem('auva_kas_data');
     if(d) dataKas=JSON.parse(d);
     render();
+    
+    // Check if install banner was dismissed recently
+    const dismissed = localStorage.getItem('auva_install_dismissed');
+    if (dismissed && (Date.now() - dismissed) < 7 * 24 * 60 * 60 * 1000) {
+        // Don't show for 7 days
+    }
 }
 
 function cekPIN(){
-    if(document.getElementById('pinInput').value === localStorage.getItem('auva_pin')){
-        document.getElementById('loginPage').style.display='none';
-    } else { alert("PIN SALAH!"); }
+    const spinner = document.getElementById('loginSpinner');
+    const text = document.getElementById('loginText');
+    
+    spinner.classList.add('show');
+    text.style.display = 'none';
+    
+    setTimeout(() => {
+        if(document.getElementById('pinInput').value === localStorage.getItem('auva_pin')){
+            document.getElementById('loginPage').style.display='none';
+            showToast('Selamat datang di Auva!');
+        } else { 
+            alert("PIN SALAH!");
+            document.getElementById('pinInput').value = '';
+        }
+        spinner.classList.remove('show');
+        text.style.display = 'inline';
+    }, 500);
 }
 
 function gantiPIN(){
     let lama=prompt("Masukkan PIN lama:");
     if(lama === localStorage.getItem('auva_pin')) {
-        let baru=prompt("PIN baru:");
-        if(baru) { localStorage.setItem('auva_pin', baru); alert("PIN Berhasil diganti!"); }
-    } else { alert("PIN Lama Salah!"); }
+        let baru=prompt("PIN baru (4 digit):");
+        if(baru && baru.length >= 4) { 
+            localStorage.setItem('auva_pin', baru); 
+            showToast('PIN berhasil diganti!');
+        } else {
+            alert('PIN minimal 4 digit!');
+        }
+    } else { 
+        alert("PIN Lama Salah!"); 
+    }
 }
 
 function resetPIN(){
@@ -167,9 +781,11 @@ function resetPIN(){
         let baru = prompt("Masukkan PIN Baru:");
         if(baru){
             localStorage.setItem('auva_pin', baru);
-            alert("PIN Berhasil direset ke: " + baru);
+            showToast('PIN berhasil direset!');
         }
-    } else { alert("KODE ADMIN SALAH! Gagal reset."); }
+    } else { 
+        alert("KODE ADMIN SALAH! Gagal reset."); 
+    }
 }
 
 // --- FUNGSI TAB ---
@@ -199,6 +815,18 @@ function hitungUmroh(){
           
     const f=n=>"Rp "+Math.round(n).toLocaleString('id-ID');
 
+    // Simpan text untuk copy
+    const lokasi = document.getElementById('lokasiPaket').value;
+    const garis = "━━━━━━━━━━━━━━━━━━";
+    lastCalculatedText = 
+`🧾 *Ringkasan Estimasi Paket*
+${garis}
+📍 *${lokasi}*
+👥 *Total Jamaah:* ${nJam}
+💰 *Harga per Pax:* *${f(jual)}*
+${garis}
+📞 *Silakan hubungi admin untuk detail.*`;
+
     let hasil = document.getElementById('hasil');
     hasil.innerHTML=`
         <div class="res-item"><span>Modal Pokok / Pax</span><b>${f(sub)}</b></div>
@@ -213,32 +841,84 @@ function hitungUmroh(){
                 *Berdasarkan ${nJam - nFoc} jamaah bayar dan ${nFoc} gratis
             </p>
         </div>
-        <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;"><i class="fas fa-clipboard"></i> SALIN RINGKASAN HARGA</button>`;
+        <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;">
+            <i class="fas fa-clipboard"></i> SALIN RINGKASAN HARGA
+        </button>`;
     hasil.style.display='block';
     hasil.scrollIntoView({behavior: "smooth"});
 }
 
-// --- FUNGSI SALIN KE WA (FORMAT BARU) ---
+// --- FUNGSI SALIN - DIperbaiki dengan 3 Method Fallback ---
 function salinRingkasan() {
-    const lokasi = document.getElementById('lokasiPaket').value;
-    const totalPax = document.getElementById('totJam').value;
-    const hrg = document.querySelector('.highlight').innerText;
-    
-    const garis = "━━━━━━━━━━━━━━━━━━";
-    const teks = 
-`🧾 *Ringkasan Estimasi Paket*
-${garis}
-📍 *${lokasi}*
-👥 *Total Jamaah:* ${totalPax}
-💰 *Harga per Pax:* *${hrg}*
-${garis}
-📞 *Silakan hubungi admin untuk detail.*`;
+    if (!lastCalculatedText) {
+        showToast('Silakan hitung estimasi dulu!');
+        return;
+    }
 
-    navigator.clipboard.writeText(teks).then(() => {
-        alert("Ringkasan Harga Profesional telah disalin!");
-    }).catch(err => {
-        alert("Gagal menyalin: " + err);
-    });
+    // Method 1: Modern Clipboard API (HTTPS only)
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(lastCalculatedText)
+            .then(() => {
+                showToast("✅ Ringkasan disalin ke clipboard!");
+            })
+            .catch((err) => {
+                console.log('Clipboard API failed:', err);
+                fallbackCopy(lastCalculatedText);
+            });
+    } else {
+        // Method 2 & 3: Fallback untuk HTTP atau browser lama
+        fallbackCopy(lastCalculatedText);
+    }
+}
+
+function fallbackCopy(text) {
+    // Buat textarea hidden
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    
+    // Select text
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile
+    
+    try {
+        // Method 2: execCommand (deprecated tapi masih works di banyak browser)
+        const successful = document.execCommand('copy');
+        
+        if (successful) {
+            showToast("✅ Ringkasan disalin!");
+            document.body.removeChild(textarea);
+        } else {
+            // Method 3: Tampilkan overlay manual copy
+            document.body.removeChild(textarea);
+            showManualCopy(text);
+        }
+    } catch (err) {
+        console.log('execCommand failed:', err);
+        document.body.removeChild(textarea);
+        showManualCopy(text);
+    }
+}
+
+function showManualCopy(text) {
+    const overlay = document.getElementById('copyOverlay');
+    const textarea = document.getElementById('manualCopyText');
+    textarea.value = text;
+    overlay.classList.add('show');
+    
+    // Auto select text
+    setTimeout(() => {
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+    }, 100);
+}
+
+function closeCopyOverlay() {
+    document.getElementById('copyOverlay').classList.remove('show');
 }
 
 // --- FUNGSI KAS REAL ---
@@ -247,14 +927,32 @@ function tambah(){
     let n=parseInt(document.getElementById('nomReal').value)||0;
     let t=document.getElementById('tipeReal').value;
     if(!k || n<=0) return alert("Isi data!");
-    dataKas.push({id:Date.now(), tgl:new Date().toLocaleDateString('id-ID'), ket:k, nom:n, tipe:t});
+    
+    dataKas.push({
+        id:Date.now(), 
+        tgl:new Date().toLocaleDateString('id-ID'), 
+        ket:k, 
+        nom:n, 
+        tipe:t
+    });
     save();
-    document.getElementById('ketReal').value=""; document.getElementById('nomReal').value="";
+    document.getElementById('ketReal').value=""; 
+    document.getElementById('nomReal').value="";
+    showToast('Transaksi berhasil ditambahkan!');
 }
 
 function save(){
     localStorage.setItem('auva_kas_data', JSON.stringify(dataKas));
     render();
+    
+    // Sync jika online
+    if (navigator.onLine && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((registration) => {
+            if ('sync' in registration) {
+                registration.sync.register('sync-kas');
+            }
+        });
+    }
 }
 
 function render(){
@@ -263,20 +961,29 @@ function render(){
     let masuk=0, keluar=0;
     dataKas.forEach(i=>{
         if(i.tipe==='masuk') masuk+=i.nom; else keluar+=i.nom;
-        body.innerHTML+=`<tr><td>${i.tgl}</td><td>${i.ket}</td><td class="${i.tipe==='masuk'?'txt-in':'txt-out'}">${i.nom.toLocaleString('id-ID')}</td><td><button class="btn-del" onclick="hapus(${i.id})"><i class="fas fa-trash"></i></button></td></tr>`;
+        body.innerHTML+=`<tr>
+            <td>${i.tgl}</td>
+            <td>${i.ket}</td>
+            <td class="${i.tipe==='masuk'?'txt-in':'txt-out'}">${i.nom.toLocaleString('id-ID')}</td>
+            <td><button class="btn-del" onclick="hapus(${i.id})"><i class="fas fa-trash"></i></button></td>
+        </tr>`;
     });
     document.getElementById('summary').innerHTML=`<b>Saldo Akhir: Rp ${(masuk-keluar).toLocaleString('id-ID')}</b>`;
 }
 
 function hapus(id){
-    if(confirm("Hapus baris?")) { dataKas=dataKas.filter(x=>x.id!==id); save(); }
+    if(confirm("Hapus baris?")) { 
+        dataKas=dataKas.filter(x=>x.id!==id); 
+        save(); 
+        showToast('Transaksi dihapus');
+    }
 }
 
 function resetData() {
     if(confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) {
         dataKas = [];
         save();
-        alert("Buku Kas dikosongkan.");
+        showToast('Buku kas dikosongkan');
     }
 }
 
@@ -287,7 +994,12 @@ function downloadExcel() {
     if(!namaGrup) return;
 
     const wb = XLSX.utils.book_new();
-    const ws1Data = dataKas.map(i => ({ Tanggal: i.tgl, Keterangan: i.ket, Tipe: i.tipe.toUpperCase(), Nominal: i.nom }));
+    const ws1Data = dataKas.map(i => ({ 
+        Tanggal: i.tgl, 
+        Keterangan: i.ket, 
+        Tipe: i.tipe.toUpperCase(), 
+        Nominal: i.nom 
+    }));
     const ws1 = XLSX.utils.json_to_sheet(ws1Data);
     XLSX.utils.book_append_sheet(wb, ws1, "Detail Transaksi");
 
@@ -298,6 +1010,7 @@ function downloadExcel() {
     XLSX.utils.book_append_sheet(wb, ws2, "Rekapan");
 
     XLSX.writeFile(wb, namaGrup + ".xlsx");
+    showToast('Excel berhasil di-download!');
 }
 </script>
 </body>
