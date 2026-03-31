@@ -9,12 +9,27 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Auva">
     
+    <!-- Critical for Android PWA -->
+    <meta name="application-name" content="Auva Kbihu AU">
+    <meta name="msapplication-TileColor" content="#1a5d4a">
+    <meta name="msapplication-TileImage" content="https://img.icons8.com/color/144/kaaba.png">
+    <meta name="msapplication-config" content="none">
+    
     <title>Auva Kbihu AU</title>
 
+    <!-- Manifest PWA - Critical for install -->
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="https://img.icons8.com/color/96/kaaba.png">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/kaaba.png">
+    
+    <!-- Icons - Multiple sizes for compatibility -->
+    <link rel="icon" type="image/png" sizes="96x96" href="https://img.icons8.com/color/96/kaaba.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/192/kaaba.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="https://img.icons8.com/color/192/kaaba.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="https://img.icons8.com/color/512/kaaba.png">
+    
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- SheetJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
@@ -39,21 +54,13 @@
             overscroll-behavior: none;
         }
         
-        /* Hidden when in standalone mode */
-        .hide-standalone {
-            display: block;
-        }
-        
+        /* Standalone mode optimizations */
         @media all and (display-mode: standalone) {
-            .hide-standalone {
-                display: none !important;
-            }
-            body {
-                padding-top: 20px; /* Extra padding for status bar */
-            }
+            body { padding-top: env(safe-area-inset-top); }
+            .hide-installed { display: none !important; }
         }
         
-        /* Install Banner - Only show in browser mode */
+        /* Install Banner - Enhanced */
         .install-banner {
             display: none;
             position: fixed;
@@ -84,17 +91,18 @@
         }
         
         .install-icon {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 35px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
-        .install-text h4 { margin: 0 0 5px 0; font-size: 18px; }
+        .install-text h4 { margin: 0 0 5px 0; font-size: 20px; }
         .install-text p { margin: 0; font-size: 13px; opacity: 0.9; }
         
         .install-buttons { display: flex; gap: 10px; }
@@ -104,15 +112,16 @@
             background: var(--accent);
             color: #1a5d4a;
             border: none;
-            padding: 14px 20px;
-            border-radius: 10px;
+            padding: 16px 20px;
+            border-radius: 12px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
         .btn-close-install {
@@ -120,24 +129,62 @@
             background: rgba(255,255,255,0.2);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
         }
         
-        .ios-instructions {
+        /* Browser-specific instructions */
+        .browser-instructions {
             display: none;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             padding: 15px;
             border-radius: 10px;
             margin-top: 15px;
             font-size: 13px;
+            border-left: 4px solid var(--accent);
         }
         
-        .ios-instructions.show { display: block; }
-        .ios-instructions ol { margin: 10px 0; padding-left: 20px; }
-        .ios-instructions li { margin: 5px 0; }
+        .browser-instructions.show { display: block; }
+        .browser-instructions ol { margin: 10px 0; padding-left: 20px; }
+        .browser-instructions li { margin: 5px 0; }
+        
+        /* Alternative install methods */
+        .alt-install {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .alt-install strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .browser-option {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn-browser {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
         
         /* Update Banner */
         .update-banner {
@@ -758,13 +805,13 @@
         <button onclick="updateApp()">Update Sekarang</button>
     </div>
     
-    <!-- Install Banner - Hidden in standalone mode -->
-    <div id="installBanner" class="install-banner hide-standalone">
+    <!-- Enhanced Install Banner -->
+    <div id="installBanner" class="install-banner hide-installed">
         <div class="install-header">
             <div class="install-icon">🕋</div>
             <div class="install-text">
                 <h4>Install Auva App</h4>
-                <p>Tambahkan ke layar utama untuk akses cepat & tanpa browser</p>
+                <p>Install sebagai aplikasi Android - tanpa browser</p>
             </div>
         </div>
         <div class="install-buttons">
@@ -775,16 +822,39 @@
                 Nanti
             </button>
         </div>
-        <div id="iosInstructions" class="ios-instructions">
-            <strong><i class="fab fa-apple"></i> Panduan iPhone/iPad:</strong>
+        
+        <!-- Chrome Instructions -->
+        <div id="chromeInstructions" class="browser-instructions">
+            <strong><i class="fab fa-chrome"></i> Jika tombol Install tidak muncul:</strong>
             <ol>
-                <li>Tap tombol <strong>Share</strong> <i class="fas fa-share-square"></i></li>
-                <li>Gulir ke bawah, pilih <strong>"Add to Home Screen"</strong></li>
-                <li>Tap <strong>Add</strong></li>
+                <li>Tap menu <strong>⋮</strong> di pojok kanan atas Chrome</li>
+                <li>Pilih <strong>"Tambahkan ke layar utama"</strong> atau <strong"Install Aplikasi"</strong></li>
+                <li>Pastikan muncul icon 🕋 (bukan logo Chrome)</li>
             </ol>
-            <p style="font-size: 11px; opacity: 0.8; margin-top: 10px;">
-                *Akan terbuka tanpa address bar Chrome/Safari
-            </p>
+        </div>
+        
+        <!-- Samsung Internet -->
+        <div id="samsungInstructions" class="browser-instructions">
+            <strong><i class="fas fa-globe"></i> Samsung Internet (Recommended):</strong>
+            <ol>
+                <li>Tap menu <strong>☰</strong> di bawah</li>
+                <li>Pilih <strong>"Tambahkan ke layar utama"</strong></li>
+                <li>Akan terbuka sebagai aplikasi native tanpa Chrome</li>
+            </ol>
+        </div>
+        
+        <!-- Alternative Browsers -->
+        <div class="alt-install">
+            <strong>Jika Chrome tidak support Install:</strong>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">Coba browser lain untuk pengalaman native:</p>
+            <div class="browser-option">
+                <button class="btn-browser" onclick="openInSamsung()">
+                    <i class="fas fa-globe"></i> Samsung Internet
+                </button>
+                <button class="btn-browser" onclick="openInKiwi()">
+                    <i class="fas fa-leaf"></i> Kiwi Browser
+                </button>
+            </div>
         </div>
     </div>
 
@@ -852,6 +922,9 @@
     
     <!-- Settings Menu -->
     <div id="settingsMenu" class="settings-menu">
+        <button class="settings-item" onclick="showInstallPrompt()">
+            <i class="fas fa-download"></i> Install Aplikasi
+        </button>
         <button class="settings-item" onclick="exportData()">
             <i class="fas fa-file-export"></i> Backup Data
         </button>
@@ -1002,56 +1075,84 @@ let lastCalculatedText = '';
 let tempPin = '';
 let loginPin = '';
 
-// --- PWA & STANDALONE DETECTION ---
+// --- PWA & INSTALL DETECTION ---
 
+// Register Service Worker with proper scope
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then((reg) => {
-                reg.addEventListener('updatefound', () => {
-                    const newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateBanner();
-                        }
-                    });
+        navigator.serviceWorker.register('sw.js', {
+            scope: './'
+        })
+        .then((reg) => {
+            console.log('SW registered:', reg.scope);
+            reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateBanner();
+                    }
                 });
-            })
-            .catch((err) => console.log('SW failed:', err));
+            });
+        })
+        .catch((err) => console.log('SW failed:', err));
     });
 }
 
-// Check if running in standalone mode (installed PWA)
+// Detect if running as installed PWA
 function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches || 
-           window.navigator.standalone || // iOS
-           document.referrer.includes('android-app://');
+           window.navigator.standalone === true || // iOS
+           window.matchMedia('(display-mode: fullscreen)').matches ||
+           window.matchMedia('(display-mode: minimal-ui)').matches ||
+           document.referrer.startsWith('android-app://');
 }
 
+// Detect browser type
+function detectBrowser() {
+    const ua = navigator.userAgent;
+    if (ua.includes('SamsungBrowser')) return 'samsung';
+    if (ua.includes('Chrome') && !ua.includes('Edg')) return 'chrome';
+    if (ua.includes('Firefox')) return 'firefox';
+    if (ua.includes('Edg')) return 'edge';
+    return 'other';
+}
+
+// Handle beforeinstallprompt
 window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('beforeinstallprompt fired');
     e.preventDefault();
     deferredPrompt = e;
-    // Only show install banner if not in standalone mode
+    
+    // Only show banner if not already installed and not dismissed
     if (!isStandalone() && !localStorage.getItem('auva_install_dismissed')) {
-        setTimeout(showInstallBanner, 2000);
+        setTimeout(() => {
+            showInstallBanner();
+            // Show browser-specific instructions
+            const browser = detectBrowser();
+            if (browser === 'samsung') {
+                document.getElementById('samsungInstructions').classList.add('show');
+            } else {
+                document.getElementById('chromeInstructions').classList.add('show');
+            }
+        }, 2000);
     }
 });
 
-window.addEventListener('appinstalled', () => {
+// Also listen for appinstalled
+window.addEventListener('appinstalled', (evt) => {
+    console.log('App installed');
     deferredPrompt = null;
     hideInstallBanner();
-    showToast('✅ Auva berhasil di-install!');
-    // Hide install elements after install
-    document.querySelectorAll('.hide-standalone').forEach(el => el.style.display = 'none');
+    // Hide all install-related elements
+    document.querySelectorAll('.hide-installed').forEach(el => {
+        el.style.display = 'none';
+    });
+    showToast('✅ Auva berhasil di-install sebagai aplikasi!');
 });
 
 function showInstallBanner() {
     if (!isStandalone()) {
         document.getElementById('installBanner').classList.add('show');
-        // Detect iOS
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isStandalone()) {
-            document.getElementById('iosInstructions').classList.add('show');
-        }
     }
 }
 
@@ -1062,22 +1163,58 @@ function hideInstallBanner() {
 function closeInstallBanner() {
     hideInstallBanner();
     localStorage.setItem('auva_install_dismissed', 'true');
-    showToast('Install banner ditutup');
+    showToast('Install banner ditutup. Buka Settings > Install Aplikasi untuk install nanti');
 }
 
 async function installApp() {
     if (!deferredPrompt) {
-        // iOS or unsupported browser
-        showToast('Gunakan "Add to Home Screen" dari menu Share');
+        // Try to trigger native install or show manual instructions
+        const browser = detectBrowser();
+        if (browser === 'chrome') {
+            showToast('Menu Install tidak tersedia. Gunakan menu Chrome ⋮ > Install Aplikasi');
+        } else {
+            showToast('Gunakan "Add to Home Screen" dari menu browser');
+        }
         return;
     }
     
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        showToast('Menginstall aplikasi...');
+    try {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Install outcome:', outcome);
+        
+        if (outcome === 'accepted') {
+            showToast('Menginstall aplikasi...');
+        } else {
+            showToast('Install dibatalkan');
+        }
+        deferredPrompt = null;
+    } catch (err) {
+        console.error('Install error:', err);
+        showToast('Error: ' + err.message);
     }
-    deferredPrompt = null;
+}
+
+// Open in alternative browsers
+function openInSamsung() {
+    const url = window.location.href;
+    // Try to open in Samsung Internet
+    window.location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.sec.android.app.sbrowser;end';
+}
+
+function openInKiwi() {
+    showToast('Silakan install Kiwi Browser dari Play Store, lalu buka URL ini di Kiwi');
+}
+
+function showInstallPrompt() {
+    if (deferredPrompt) {
+        showInstallBanner();
+    } else {
+        // Show manual instructions
+        document.getElementById('installBanner').classList.add('show');
+        document.getElementById('chromeInstructions').classList.add('show');
+    }
+    toggleSettings();
 }
 
 function showUpdateBanner() {
@@ -1188,9 +1325,13 @@ function cekPIN() {
         document.getElementById('mainApp').style.display = 'block';
         showToast('✅ Selamat datang di Auva!');
         
-        // Show install banner after login if not standalone and not dismissed
-        if (!isStandalone() && !localStorage.getItem('auva_install_dismissed') && deferredPrompt) {
-            setTimeout(showInstallBanner, 1000);
+        // Show install banner if not standalone and not dismissed
+        if (!isStandalone() && !localStorage.getItem('auva_install_dismissed')) {
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    showInstallBanner();
+                }
+            }, 1000);
         }
     } else {
         showToast('❌ PIN salah!');
@@ -1213,9 +1354,11 @@ function initApp() {
     if (d) dataKas = JSON.parse(d);
     render();
     
-    // Hide install elements if in standalone mode
+    // Hide install elements if standalone
     if (isStandalone()) {
-        document.querySelectorAll('.hide-standalone').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.hide-installed').forEach(el => {
+            el.style.display = 'none';
+        });
     }
     
     const savedPin = localStorage.getItem('auva_pin');
