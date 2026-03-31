@@ -39,7 +39,21 @@
             overscroll-behavior: none;
         }
         
-        /* Install Banner */
+        /* Hidden when in standalone mode */
+        .hide-standalone {
+            display: block;
+        }
+        
+        @media all and (display-mode: standalone) {
+            .hide-standalone {
+                display: none !important;
+            }
+            body {
+                padding-top: 20px; /* Extra padding for status bar */
+            }
+        }
+        
+        /* Install Banner - Only show in browser mode */
         .install-banner {
             display: none;
             position: fixed;
@@ -744,13 +758,13 @@
         <button onclick="updateApp()">Update Sekarang</button>
     </div>
     
-    <!-- Install Banner -->
-    <div id="installBanner" class="install-banner">
+    <!-- Install Banner - Hidden in standalone mode -->
+    <div id="installBanner" class="install-banner hide-standalone">
         <div class="install-header">
             <div class="install-icon">🕋</div>
             <div class="install-text">
                 <h4>Install Auva App</h4>
-                <p>Tambahkan ke layar utama untuk akses cepat & offline</p>
+                <p>Tambahkan ke layar utama untuk akses cepat & tanpa browser</p>
             </div>
         </div>
         <div class="install-buttons">
@@ -762,12 +776,15 @@
             </button>
         </div>
         <div id="iosInstructions" class="ios-instructions">
-            <strong><i class="fab fa-apple"></i> Panduan Install di iPhone/iPad:</strong>
+            <strong><i class="fab fa-apple"></i> Panduan iPhone/iPad:</strong>
             <ol>
-                <li>Tap tombol <strong>Share</strong> <i class="fas fa-share-square"></i> di bawah</li>
+                <li>Tap tombol <strong>Share</strong> <i class="fas fa-share-square"></i></li>
                 <li>Gulir ke bawah, pilih <strong>"Add to Home Screen"</strong></li>
-                <li>Tap <strong>Add</strong> di pojok kanan atas</li>
+                <li>Tap <strong>Add</strong></li>
             </ol>
+            <p style="font-size: 11px; opacity: 0.8; margin-top: 10px;">
+                *Akan terbuka tanpa address bar Chrome/Safari
+            </p>
         </div>
     </div>
 
@@ -835,9 +852,6 @@
     
     <!-- Settings Menu -->
     <div id="settingsMenu" class="settings-menu">
-        <button class="settings-item" onclick="showInstallPrompt()">
-            <i class="fas fa-download"></i> Install Aplikasi
-        </button>
         <button class="settings-item" onclick="exportData()">
             <i class="fas fa-file-export"></i> Backup Data
         </button>
@@ -932,14 +946,10 @@
             <div id="hasil" class="res-card"></div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- MENU PENCATATAN REAL - SEMUA FITUR ASLI ADA -->
-        <!-- ========================================== -->
         <div id="real" class="tab-content">
             <div class="card">
                 <h2>Pencatatan REAL</h2>
                 
-                <!-- Input Transaksi -->
                 <div class="section-title">Input Transaksi</div>
                 <input id="ketReal" placeholder="Keterangan" style="margin-bottom:10px;">
                 <div class="row">
@@ -950,10 +960,8 @@
                     <i class="fas fa-plus-circle"></i> TAMBAH TRANSAKSI
                 </button>
                 
-                <!-- Summary -->
                 <div class="summary-real" id="summary"></div>
                 
-                <!-- Tabel Detail -->
                 <div class="table-container">
                     <table>
                         <thead>
@@ -963,14 +971,10 @@
                     </table>
                 </div>
                 
-                <!-- Download Excel -->
                 <button class="btn" onclick="downloadExcel()" style="background:#27ae60">
                     <i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)
                 </button>
                 
-                <!-- ========================================== -->
-                <!-- SEMUA TOMBOL ASLI DI PERTAHANKAN -->
-                <!-- ========================================== -->
                 <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">
                     <i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)
                 </button>
@@ -982,7 +986,6 @@
                 <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">
                     <i class="fas fa-undo"></i> RESET PIN (LUPA)
                 </button>
-                <!-- ========================================== -->
                 
             </div>
         </div>
@@ -990,7 +993,6 @@
         <footer>&copy; 2026 Auva Kbihu AU</footer>
     </div>
     
-    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
 <script>
@@ -1000,7 +1002,7 @@ let lastCalculatedText = '';
 let tempPin = '';
 let loginPin = '';
 
-// --- PWA FUNCTIONS ---
+// --- PWA & STANDALONE DETECTION ---
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -1019,10 +1021,18 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Check if running in standalone mode (installed PWA)
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone || // iOS
+           document.referrer.includes('android-app://');
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if (!localStorage.getItem('auva_install_dismissed')) {
+    // Only show install banner if not in standalone mode
+    if (!isStandalone() && !localStorage.getItem('auva_install_dismissed')) {
         setTimeout(showInstallBanner, 2000);
     }
 });
@@ -1031,12 +1041,15 @@ window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     hideInstallBanner();
     showToast('✅ Auva berhasil di-install!');
+    // Hide install elements after install
+    document.querySelectorAll('.hide-standalone').forEach(el => el.style.display = 'none');
 });
 
 function showInstallBanner() {
-    if (!window.matchMedia('(display-mode: standalone)').matches) {
+    if (!isStandalone()) {
         document.getElementById('installBanner').classList.add('show');
-        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        // Detect iOS
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !isStandalone()) {
             document.getElementById('iosInstructions').classList.add('show');
         }
     }
@@ -1049,27 +1062,22 @@ function hideInstallBanner() {
 function closeInstallBanner() {
     hideInstallBanner();
     localStorage.setItem('auva_install_dismissed', 'true');
-    showToast('Install banner ditutup. Buka dari menu Settings > Install Aplikasi');
+    showToast('Install banner ditutup');
 }
 
 async function installApp() {
     if (!deferredPrompt) {
-        showToast('Gunakan "Add to Home Screen" dari menu browser');
+        // iOS or unsupported browser
+        showToast('Gunakan "Add to Home Screen" dari menu Share');
         return;
     }
+    
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') showToast('Menginstall aplikasi...');
-    deferredPrompt = null;
-}
-
-function showInstallPrompt() {
-    if (deferredPrompt) {
-        showInstallBanner();
-    } else {
-        showToast('Browser tidak mendukung install otomatis. Gunakan menu browser > Add to Home Screen');
+    if (outcome === 'accepted') {
+        showToast('Menginstall aplikasi...');
     }
-    toggleSettings();
+    deferredPrompt = null;
 }
 
 function showUpdateBanner() {
@@ -1179,7 +1187,9 @@ function cekPIN() {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'block';
         showToast('✅ Selamat datang di Auva!');
-        if (!localStorage.getItem('auva_install_dismissed') && deferredPrompt) {
+        
+        // Show install banner after login if not standalone and not dismissed
+        if (!isStandalone() && !localStorage.getItem('auva_install_dismissed') && deferredPrompt) {
             setTimeout(showInstallBanner, 1000);
         }
     } else {
@@ -1202,6 +1212,11 @@ function initApp() {
     const d = localStorage.getItem('auva_kas_data');
     if (d) dataKas = JSON.parse(d);
     render();
+    
+    // Hide install elements if in standalone mode
+    if (isStandalone()) {
+        document.querySelectorAll('.hide-standalone').forEach(el => el.style.display = 'none');
+    }
     
     const savedPin = localStorage.getItem('auva_pin');
     if (!savedPin) {
@@ -1343,7 +1358,7 @@ ${garis}
     hasil.scrollIntoView({behavior: "smooth"});
 }
 
-// --- COPY FUNCTIONS ---
+// --- COPY ---
 
 function salinRingkasan() {
     if (!lastCalculatedText) {
@@ -1392,9 +1407,7 @@ function closeCopyOverlay() {
     document.getElementById('copyOverlay').classList.remove('show');
 }
 
-// ==========================================
-// SEMUA FUNGSI KAS REAL (TIDAK BERUBAH)
-// ==========================================
+// --- KAS REAL ---
 
 function tambah() {
     let k = document.getElementById('ketReal').value;
@@ -1452,9 +1465,7 @@ function resetData() {
     }
 }
 
-// ==========================================
-// FUNGSI PIN (TETAP ADA DI MENU REAL)
-// ==========================================
+// --- PIN FUNCTIONS ---
 
 function gantiPIN() {
     let lama = prompt("Masukkan PIN lama:");
@@ -1485,9 +1496,7 @@ function resetPIN() {
     }
 }
 
-// ==========================================
-// FUNGSI EXCEL (TIDAK BERUBAH)
-// ==========================================
+// --- EXCEL ---
 
 function downloadExcel() {
     if (dataKas.length === 0) return alert("Data kosong!");
