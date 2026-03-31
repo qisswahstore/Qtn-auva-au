@@ -9,27 +9,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Auva">
     
-    <!-- Critical for Android PWA -->
-    <meta name="application-name" content="Auva Kbihu AU">
-    <meta name="msapplication-TileColor" content="#1a5d4a">
-    <meta name="msapplication-TileImage" content="https://img.icons8.com/color/144/kaaba.png">
-    <meta name="msapplication-config" content="none">
-    
     <title>Auva Kbihu AU</title>
 
-    <!-- Manifest PWA - Critical for install -->
+    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- Icons - Multiple sizes for compatibility -->
-    <link rel="icon" type="image/png" sizes="96x96" href="https://img.icons8.com/color/96/kaaba.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/192/kaaba.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="https://img.icons8.com/color/192/kaaba.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="https://img.icons8.com/color/512/kaaba.png">
+    <!-- Icons -->
+    <link rel="icon" href="https://img.icons8.com/color/96/kaaba.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/kaaba.png">
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- SheetJS -->
+    <!-- SheetJS untuk Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
@@ -54,139 +46,48 @@
             overscroll-behavior: none;
         }
         
-        /* Standalone mode optimizations */
-        @media all and (display-mode: standalone) {
-            body { padding-top: env(safe-area-inset-top); }
-            .hide-installed { display: none !important; }
-        }
-        
-        /* Install Banner - Enhanced */
+        /* Install Banner - Sama seperti kode Anda */
         .install-banner {
             display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--primary) 0%, #0d3328 100%);
+            background: var(--primary);
             color: white;
-            padding: 20px;
+            padding: 15px 20px;
             z-index: 10000;
-            flex-direction: column;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-            animation: slideUpBanner 0.4s ease;
-        }
-        
-        @keyframes slideUpBanner {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
         }
         
         .install-banner.show { display: flex; }
         
-        .install-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
+        .install-banner .text { flex: 1; }
+        .install-banner h4 { margin: 0 0 5px 0; }
+        .install-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
         
-        .install-icon {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        
-        .install-text h4 { margin: 0 0 5px 0; font-size: 20px; }
-        .install-text p { margin: 0; font-size: 13px; opacity: 0.9; }
-        
-        .install-buttons { display: flex; gap: 10px; }
-        
-        .btn-install {
-            flex: 2;
+        .install-banner .btn-install {
             background: var(--accent);
             color: #1a5d4a;
             border: none;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        
-        .btn-close-install {
-            flex: 1;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        /* Browser-specific instructions */
-        .browser-instructions {
-            display: none;
-            background: rgba(255,255,255,0.15);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            font-size: 13px;
-            border-left: 4px solid var(--accent);
-        }
-        
-        .browser-instructions.show { display: block; }
-        .browser-instructions ol { margin: 10px 0; padding-left: 20px; }
-        .browser-instructions li { margin: 5px 0; }
-        
-        /* Alternative install methods */
-        .alt-install {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        
-        .alt-install strong {
-            color: var(--accent);
-            display: block;
-            margin-bottom: 8px;
-        }
-        
-        .browser-option {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .btn-browser {
-            flex: 1;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-size: 12px;
+            font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
+            margin-right: 10px;
         }
         
-        /* Update Banner */
+        .install-banner .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* Update Available Banner */
         .update-banner {
             display: none;
             position: fixed;
@@ -202,6 +103,7 @@
         }
         
         .update-banner.show { display: block; }
+        
         .update-banner button {
             background: var(--primary);
             color: white;
@@ -212,115 +114,6 @@
             cursor: pointer;
         }
         
-        /* PIN Setup Modal */
-        .pin-setup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(26, 93, 74, 0.95);
-            z-index: 10005;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .pin-setup-overlay.show { display: flex; }
-        
-        .pin-setup-box {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            animation: scaleIn 0.3s ease;
-        }
-        
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        .pin-setup-box .icon {
-            font-size: 60px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        
-        .pin-setup-box h3 {
-            margin: 0 0 10px 0;
-            color: var(--primary);
-            font-size: 22px;
-        }
-        
-        .pin-setup-box p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        
-        .pin-input-container {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .pin-digit {
-            width: 50px;
-            height: 60px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            background: #fafafa;
-        }
-        
-        .pin-digit.filled {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-        
-        .pin-error {
-            color: var(--red);
-            font-size: 13px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        
-        .pin-error.show { display: block; }
-        
-        .pin-buttons { display: flex; gap: 10px; }
-        
-        .btn-confirm-pin {
-            flex: 2;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        
-        .btn-skip-pin {
-            flex: 1;
-            background: #ecf0f1;
-            color: #666;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        /* Tab Menu */
         .tab-menu { 
             display: flex; 
             max-width: 500px; 
@@ -355,6 +148,7 @@
             max-width: 500px; 
             margin: auto; 
             border-top: 5px solid var(--primary); 
+            box-sizing: border-box; 
         }
         
         .logo-box { text-align: center; margin-bottom: 10px; }
@@ -401,6 +195,7 @@
             border: 1px solid #ddd; 
             border-radius: 8px; 
             font-size: 15px; 
+            box-sizing: border-box; 
             background: #fafafa; 
             -webkit-appearance: none;
         }
@@ -429,7 +224,7 @@
             align-items: center; 
             justify-content: center; 
             gap: 8px; 
-            transition: transform 0.1s;
+            transition: transform 0.1s, opacity 0.2s;
         }
         
         .btn:active { transform: scale(0.98); }
@@ -443,6 +238,7 @@
             display: none; 
             margin: 15px auto; 
             max-width: 500px; 
+            box-sizing: border-box; 
             animation: slideUp 0.3s ease;
         }
         
@@ -506,6 +302,7 @@
             color: var(--red); 
             border: none; 
             background: none; 
+            font-weight: bold; 
             font-size: 18px; 
             cursor: pointer; 
             width: 30px; 
@@ -514,7 +311,10 @@
             align-items: center; 
             justify-content: center; 
             border-radius: 5px; 
+            transition: background 0.2s; 
         }
+        
+        .btn-del:hover { background: rgba(231, 76, 60, 0.1); }
         
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -527,7 +327,9 @@
             padding-bottom: 100px; 
         }
         
-        /* Login Page */
+        /* ========================================== */
+        /* LOGIN PAGE - DIUPGRADE DENGAN KEYPAD PIN */
+        /* ========================================== */
         #loginPage { 
             position: fixed; 
             inset: 0; 
@@ -546,6 +348,12 @@
             max-width: 320px; 
             text-align: center; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
         
         .login-icon {
@@ -633,6 +441,10 @@
             font-weight: bold;
             font-size: 16px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         /* Connection Status */
@@ -661,16 +473,16 @@
             transform: translateY(-100%);
         }
         
-        /* Toast */
+        /* Toast Notification */
         .toast {
             position: fixed;
-            bottom: 100px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: #333;
             color: white;
-            padding: 15px 25px;
-            border-radius: 30px;
+            padding: 12px 24px;
+            border-radius: 25px;
             font-size: 14px;
             z-index: 10003;
             opacity: 0;
@@ -710,6 +522,9 @@
         .copy-box h3 {
             margin-top: 0;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .copy-box textarea {
@@ -737,59 +552,6 @@
             color: white;
             width: 100%;
         }
-        
-        /* Settings Button */
-        .settings-btn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--primary);
-            cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .settings-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            right: 10px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            z-index: 101;
-            overflow: hidden;
-            min-width: 200px;
-        }
-        
-        .settings-menu.show { display: block; }
-        
-        .settings-item {
-            padding: 15px 20px;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .settings-item:last-child { border-bottom: none; }
-        .settings-item:hover { background: #f5f5f5; }
-        .settings-item i { width: 20px; color: var(--primary); }
     </style>
 </head>
 
@@ -799,141 +561,24 @@
         <i class="fas fa-wifi"></i> <span id="connText">Online</span>
     </div>
     
-    <!-- Update Banner -->
+    <!-- Update Available Banner -->
     <div id="updateBanner" class="update-banner">
-        <i class="fas fa-sync-alt"></i> Update tersedia! 
-        <button onclick="updateApp()">Update Sekarang</button>
+        Update tersedia! <button onclick="updateApp()">Update Sekarang</button>
     </div>
     
-    <!-- Enhanced Install Banner -->
-    <div id="installBanner" class="install-banner hide-installed">
-        <div class="install-header">
-            <div class="install-icon">🕋</div>
-            <div class="install-text">
-                <h4>Install Auva App</h4>
-                <p>Install sebagai aplikasi Android - tanpa browser</p>
-            </div>
+    <!-- Install Banner - Sama persis kode Anda -->
+    <div id="installBanner" class="install-banner">
+        <div class="text">
+            <h4><i class="fas fa-kaaba"></i> Install Auva</h4>
+            <p>Tambahkan ke layar utama untuk akses cepat</p>
         </div>
-        <div class="install-buttons">
-            <button class="btn-install" onclick="installApp()">
-                <i class="fas fa-download"></i> Install Sekarang
-            </button>
-            <button class="btn-close-install" onclick="closeInstallBanner()">
-                Nanti
-            </button>
-        </div>
-        
-        <!-- Chrome Instructions -->
-        <div id="chromeInstructions" class="browser-instructions">
-            <strong><i class="fab fa-chrome"></i> Jika tombol Install tidak muncul:</strong>
-            <ol>
-                <li>Tap menu <strong>⋮</strong> di pojok kanan atas Chrome</li>
-                <li>Pilih <strong>"Tambahkan ke layar utama"</strong> atau <strong"Install Aplikasi"</strong></li>
-                <li>Pastikan muncul icon 🕋 (bukan logo Chrome)</li>
-            </ol>
-        </div>
-        
-        <!-- Samsung Internet -->
-        <div id="samsungInstructions" class="browser-instructions">
-            <strong><i class="fas fa-globe"></i> Samsung Internet (Recommended):</strong>
-            <ol>
-                <li>Tap menu <strong>☰</strong> di bawah</li>
-                <li>Pilih <strong>"Tambahkan ke layar utama"</strong></li>
-                <li>Akan terbuka sebagai aplikasi native tanpa Chrome</li>
-            </ol>
-        </div>
-        
-        <!-- Alternative Browsers -->
-        <div class="alt-install">
-            <strong>Jika Chrome tidak support Install:</strong>
-            <p style="margin: 5px 0 0 0; opacity: 0.9;">Coba browser lain untuk pengalaman native:</p>
-            <div class="browser-option">
-                <button class="btn-browser" onclick="openInSamsung()">
-                    <i class="fas fa-globe"></i> Samsung Internet
-                </button>
-                <button class="btn-browser" onclick="openInKiwi()">
-                    <i class="fas fa-leaf"></i> Kiwi Browser
-                </button>
-            </div>
-        </div>
+        <button class="btn-install" onclick="installApp()">Install</button>
+        <button class="btn-close" onclick="closeInstallBanner()">&times;</button>
     </div>
 
-    <!-- PIN Setup Modal -->
-    <div id="pinSetupOverlay" class="pin-setup-overlay">
-        <div class="pin-setup-box">
-            <div class="icon"><i class="fas fa-lock"></i></div>
-            <h3>Buat PIN Keamanan</h3>
-            <p>Masukkan 4 digit PIN untuk mengamankan data aplikasi</p>
-            
-            <div class="pin-input-container">
-                <input type="password" class="pin-digit" id="pin1" maxlength="1" readonly>
-                <input type="password" class="pin-digit" id="pin2" maxlength="1" readonly>
-                <input type="password" class="pin-digit" id="pin3" maxlength="1" readonly>
-                <input type="password" class="pin-digit" id="pin4" maxlength="1" readonly>
-            </div>
-            
-            <div class="pin-error" id="pinError">PIN tidak cocok!</div>
-            
-            <div class="pin-keypad">
-                <button class="key-btn" onclick="enterPin(1)">1</button>
-                <button class="key-btn" onclick="enterPin(2)">2</button>
-                <button class="key-btn" onclick="enterPin(3)">3</button>
-                <button class="key-btn" onclick="enterPin(4)">4</button>
-                <button class="key-btn" onclick="enterPin(5)">5</button>
-                <button class="key-btn" onclick="enterPin(6)">6</button>
-                <button class="key-btn" onclick="enterPin(7)">7</button>
-                <button class="key-btn" onclick="enterPin(8)">8</button>
-                <button class="key-btn" onclick="enterPin(9)">9</button>
-                <button class="key-btn" onclick="clearPin()" style="font-size: 16px;"><i class="fas fa-undo"></i></button>
-                <button class="key-btn" onclick="enterPin(0)">0</button>
-                <button class="key-btn del" onclick="deletePin()"><i class="fas fa-backspace"></i></button>
-            </div>
-            
-            <div class="pin-buttons">
-                <button class="btn-confirm-pin" onclick="confirmPinSetup()">
-                    <i class="fas fa-check"></i> Simpan PIN
-                </button>
-                <button class="btn-skip-pin" onclick="skipPinSetup()">
-                    Lewati
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manual Copy Overlay -->
-    <div id="copyOverlay" class="copy-overlay">
-        <div class="copy-box">
-            <h3><i class="fas fa-copy"></i> Salin Ringkasan</h3>
-            <div class="copy-instruction">
-                <i class="fas fa-info-circle"></i> 
-                Tekan dan tahan text di bawah, lalu pilih "Salin"
-            </div>
-            <textarea id="manualCopyText" readonly></textarea>
-            <button class="btn btn-close-overlay" onclick="closeCopyOverlay()">
-                <i class="fas fa-check"></i> Selesai
-            </button>
-        </div>
-    </div>
-
-    <!-- Settings Button -->
-    <button class="settings-btn" onclick="toggleSettings()">
-        <i class="fas fa-cog"></i>
-    </button>
-    
-    <!-- Settings Menu -->
-    <div id="settingsMenu" class="settings-menu">
-        <button class="settings-item" onclick="showInstallPrompt()">
-            <i class="fas fa-download"></i> Install Aplikasi
-        </button>
-        <button class="settings-item" onclick="exportData()">
-            <i class="fas fa-file-export"></i> Backup Data
-        </button>
-        <button class="settings-item" onclick="importData()">
-            <i class="fas fa-file-import"></i> Restore Data
-        </button>
-    </div>
-
-    <!-- Login Page -->
+    <!-- ========================================== -->
+    <!-- LOGIN PAGE - DIUPGRADE DENGAN KEYPAD PIN -->
+    <!-- ========================================== -->
     <div id="loginPage">
         <div class="login-box">
             <div class="login-icon"><i class="fas fa-kaaba"></i></div>
@@ -968,190 +613,186 @@
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="mainApp" style="display: none;">
-        <div class="tab-menu">
-            <button class="tab-btn active" onclick="openTab('estimasi', this)">ESTIMASI</button>
-            <button class="tab-btn" onclick="openTab('real', this)">KAS REAL</button>
-        </div>
-
-        <div id="estimasi" class="tab-content active">
-            <div class="card">
-                <div class="logo-box"><img src="https://img.icons8.com/color/96/kaaba.png" style="width:80px;"></div>
-                <h2>Estimasi Biaya Umroh</h2>
-                <p class="subtitle">Auva Kbihu AU</p>
-                
-                <div class="section-title">Data Rombongan</div>
-                <div class="input-group">
-                    <label>Nama Paket / Lokasi</label>
-                    <input type="text" id="lokasiPaket" value="Umroh Syawal - Auva Kbihu AU">
-                </div>
-                <div class="row">
-                    <div class="input-group"><label>Total Pax</label><input type="number" id="totJam" value="35"></div>
-                    <div class="input-group"><label>Gratis</label><input type="number" id="jamGratis" value="1"></div>
-                    <div class="input-group"><label>Jumlah TL</label><input type="number" id="numTL" value="1"></div>
-                </div>
-
-                <div class="section-title">Komponen Biaya</div>
-                <div class="row">
-                    <div class="input-group"><label>Tiket</label><input type="number" id="cTiket" value="15450000"></div>
-                    <div class="input-group"><label>LA / Hotel</label><input type="number" id="cLA" value="14450000"></div>
-                </div>
-                <div class="row">
-                    <div class="input-group"><label>Asuransi</label><input type="number" id="cAsuransi" value="60000"></div>
-                    <div class="input-group"><label>Handling</label><input type="number" id="cHandling" value="100000"></div>
-                </div>
-                <div class="row">
-                    <div class="input-group"><label>Perlengkapan</label><input type="number" id="cAlat" value="1000000"></div>
-                    <div class="input-group"><label>Aplikasi</label><input type="number" id="cAplikasi" value="60000"></div>
-                </div>
-                <div class="row">
-                    <div class="input-group"><label>Diskon/PIC</label><input type="number" id="cPIC" value="0"></div>
-                    <div class="input-group"><label>Lain-lain</label><input type="number" id="cLain" value="0"></div>
-                </div>
-
-                <div class="section-title">Margin</div>
-                <div class="input-group"><label>Profit (%)</label><input type="number" id="profitPct" value="0"></div>
-                <button class="btn" onclick="hitungUmroh()">
-                    <i class="fas fa-calculator"></i> HITUNG ESTIMASI
-                </button>
+    <!-- Manual Copy Overlay -->
+    <div id="copyOverlay" class="copy-overlay">
+        <div class="copy-box">
+            <h3><i class="fas fa-copy"></i> Salin Ringkasan</h3>
+            <div class="copy-instruction">
+                <i class="fas fa-info-circle"></i> 
+                Tekan dan tahan text di bawah, lalu pilih "Salin"
             </div>
-            <div id="hasil" class="res-card"></div>
+            <textarea id="manualCopyText" readonly></textarea>
+            <button class="btn btn-close-overlay" onclick="closeCopyOverlay()">
+                <i class="fas fa-check"></i> Selesai
+            </button>
         </div>
-
-        <div id="real" class="tab-content">
-            <div class="card">
-                <h2>Pencatatan REAL</h2>
-                
-                <div class="section-title">Input Transaksi</div>
-                <input id="ketReal" placeholder="Keterangan" style="margin-bottom:10px;">
-                <div class="row">
-                    <div style="flex:2"><input id="nomReal" type="number" placeholder="Nominal Rp"></div>
-                    <div style="flex:1"><select id="tipeReal"><option value="masuk">In</option><option value="keluar">Out</option></select></div>
-                </div>
-                <button class="btn" onclick="tambah()" style="background:var(--accent)">
-                    <i class="fas fa-plus-circle"></i> TAMBAH TRANSAKSI
-                </button>
-                
-                <div class="summary-real" id="summary"></div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr><th>Tgl</th><th>Ket</th><th>Nom</th><th></th></tr>
-                        </thead>
-                        <tbody id="bodyKas"></tbody>
-                    </table>
-                </div>
-                
-                <button class="btn" onclick="downloadExcel()" style="background:#27ae60">
-                    <i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)
-                </button>
-                
-                <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">
-                    <i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)
-                </button>
-                
-                <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">
-                    <i class="fas fa-key"></i> GANTI PIN
-                </button>
-                
-                <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">
-                    <i class="fas fa-undo"></i> RESET PIN (LUPA)
-                </button>
-                
-            </div>
-        </div>
-
-        <footer>&copy; 2026 Auva Kbihu AU</footer>
     </div>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab('estimasi', this)">ESTIMASI</button>
+        <button class="tab-btn" onclick="openTab('real', this)">KAS REAL</button>
+    </div>
+
+    <div id="estimasi" class="tab-content active">
+        <div class="card">
+            <div class="logo-box"><img src="https://img.icons8.com/color/96/kaaba.png" style="width:80px;"></div>
+            <h2>Estimasi Biaya Umroh</h2>
+            <p class="subtitle">Auva Kbihu AU</p>
+            
+            <div class="section-title">Data Rombongan</div>
+            <div class="input-group">
+                <label>Nama Paket / Lokasi</label>
+                <input type="text" id="lokasiPaket" value="Umroh Syawal - Auva Kbihu AU">
+            </div>
+            <div class="row">
+                <div class="input-group"><label>Total Pax</label><input type="number" id="totJam" value="35"></div>
+                <div class="input-group"><label>Gratis</label><input type="number" id="jamGratis" value="1"></div>
+                <div class="input-group"><label>Jumlah TL</label><input type="number" id="numTL" value="1"></div>
+            </div>
+
+            <div class="section-title">Komponen Biaya</div>
+            <div class="row">
+                <div class="input-group"><label>Tiket</label><input type="number" id="cTiket" value="15450000"></div>
+                <div class="input-group"><label>LA / Hotel</label><input type="number" id="cLA" value="14450000"></div>
+            </div>
+            <div class="row">
+                <div class="input-group"><label>Asuransi</label><input type="number" id="cAsuransi" value="60000"></div>
+                <div class="input-group"><label>Handling</label><input type="number" id="cHandling" value="100000"></div>
+            </div>
+            <div class="row">
+                <div class="input-group"><label>Perlengkapan</label><input type="number" id="cAlat" value="1000000"></div>
+                <div class="input-group"><label>Aplikasi</label><input type="number" id="cAplikasi" value="60000"></div>
+            </div>
+            <div class="row">
+                <div class="input-group"><label>Diskon/PIC</label><input type="number" id="cPIC" value="0"></div>
+                <div class="input-group"><label>Lain-lain</label><input type="number" id="cLain" value="0"></div>
+            </div>
+
+            <div class="section-title">Margin</div>
+            <div class="input-group"><label>Profit (%)</label><input type="number" id="profitPct" value="0"></div>
+            <button class="btn" onclick="hitungUmroh()">
+                <i class="fas fa-calculator"></i> HITUNG ESTIMASI
+            </button>
+        </div>
+        <div id="hasil" class="res-card"></div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MENU PENCATATAN REAL - SEMUA FITUR ASLI ANDA ADA -->
+    <!-- ========================================== -->
+    <div id="real" class="tab-content">
+        <div class="card">
+            <h2>Pencatatan REAL</h2>
+            <div class="section-title">Input Transaksi</div>
+            <input id="ketReal" placeholder="Keterangan" style="margin-bottom:10px;">
+            <div class="row">
+                <div style="flex:2"><input id="nomReal" type="number" placeholder="Nominal Rp"></div>
+                <div style="flex:1"><select id="tipeReal"><option value="masuk">In</option><option value="keluar">Out</option></select></div>
+            </div>
+            <button class="btn" onclick="tambah()" style="background:var(--accent)">
+                <i class="fas fa-plus-circle"></i> TAMBAH TRANSAKSI
+            </button>
+            <div class="summary-real" id="summary"></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Tgl</th><th>Ket</th><th>Nom</th><th></th></tr>
+                    </thead>
+                    <tbody id="bodyKas"></tbody>
+                </table>
+            </div>
+            <button class="btn" onclick="downloadExcel()" style="background:#27ae60">
+                <i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)
+            </button>
+            <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">
+                <i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)
+            </button>
+            <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">
+                <i class="fas fa-key"></i> GANTI PIN
+            </button>
+            <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">
+                <i class="fas fa-undo"></i> RESET PIN (LUPA)
+            </button>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 Auva Kbihu AU</footer>
     
+    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
 <script>
 let dataKas=[];
 let deferredPrompt = null;
 let lastCalculatedText = '';
-let tempPin = '';
 let loginPin = '';
 
-// --- PWA & INSTALL DETECTION ---
+// ==========================================
+// PWA FUNCTIONS - SAMA PERSIS KODE ANDA
+// ==========================================
 
-// Register Service Worker with proper scope
+// Register Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js', {
-            scope: './'
-        })
-        .then((reg) => {
-            console.log('SW registered:', reg.scope);
-            reg.addEventListener('updatefound', () => {
-                const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        showUpdateBanner();
-                    }
+        navigator.serviceWorker.register('sw.js')
+            .then((registration) => {
+                console.log('SW registered:', registration);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateBanner();
+                        }
+                    });
                 });
+            })
+            .catch((error) => {
+                console.log('SW registration failed:', error);
             });
-        })
-        .catch((err) => console.log('SW failed:', err));
     });
 }
 
-// Detect if running as installed PWA
-function isStandalone() {
-    return window.matchMedia('(display-mode: standalone)').matches || 
-           window.navigator.standalone === true || // iOS
-           window.matchMedia('(display-mode: fullscreen)').matches ||
-           window.matchMedia('(display-mode: minimal-ui)').matches ||
-           document.referrer.startsWith('android-app://');
-}
-
-// Detect browser type
-function detectBrowser() {
-    const ua = navigator.userAgent;
-    if (ua.includes('SamsungBrowser')) return 'samsung';
-    if (ua.includes('Chrome') && !ua.includes('Edg')) return 'chrome';
-    if (ua.includes('Firefox')) return 'firefox';
-    if (ua.includes('Edg')) return 'edge';
-    return 'other';
-}
-
-// Handle beforeinstallprompt
+// Listen for beforeinstallprompt
 window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('beforeinstallprompt fired');
     e.preventDefault();
     deferredPrompt = e;
-    
-    // Only show banner if not already installed and not dismissed
-    if (!isStandalone() && !localStorage.getItem('auva_install_dismissed')) {
-        setTimeout(() => {
-            showInstallBanner();
-            // Show browser-specific instructions
-            const browser = detectBrowser();
-            if (browser === 'samsung') {
-                document.getElementById('samsungInstructions').classList.add('show');
-            } else {
-                document.getElementById('chromeInstructions').classList.add('show');
-            }
-        }, 2000);
-    }
+    showInstallBanner();
 });
 
-// Also listen for appinstalled
-window.addEventListener('appinstalled', (evt) => {
-    console.log('App installed');
+// Check if app is installed
+window.addEventListener('appinstalled', () => {
+    console.log('Auva was installed');
     deferredPrompt = null;
     hideInstallBanner();
-    // Hide all install-related elements
-    document.querySelectorAll('.hide-installed').forEach(el => {
-        el.style.display = 'none';
-    });
-    showToast('✅ Auva berhasil di-install sebagai aplikasi!');
+    showToast('Auva berhasil di-install!');
 });
 
+// Online/Offline detection
+window.addEventListener('online', () => updateConnectionStatus(true));
+window.addEventListener('offline', () => updateConnectionStatus(false));
+
+function updateConnectionStatus(online) {
+    const status = document.getElementById('connectionStatus');
+    const text = document.getElementById('connText');
+    
+    if (online) {
+        status.className = 'connection-status online';
+        text.textContent = 'Online';
+        setTimeout(() => {
+            status.style.transform = 'translateY(-100%)';
+        }, 2000);
+    } else {
+        status.style.transform = 'translateY(0)';
+        status.className = 'connection-status offline';
+        text.textContent = 'Offline Mode - Data tersimpan lokal';
+    }
+}
+
 function showInstallBanner() {
-    if (!isStandalone()) {
+    // Only show if not already installed
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
         document.getElementById('installBanner').classList.add('show');
     }
 }
@@ -1162,59 +803,19 @@ function hideInstallBanner() {
 
 function closeInstallBanner() {
     hideInstallBanner();
-    localStorage.setItem('auva_install_dismissed', 'true');
-    showToast('Install banner ditutup. Buka Settings > Install Aplikasi untuk install nanti');
+    localStorage.setItem('auva_install_dismissed', Date.now());
 }
 
 async function installApp() {
-    if (!deferredPrompt) {
-        // Try to trigger native install or show manual instructions
-        const browser = detectBrowser();
-        if (browser === 'chrome') {
-            showToast('Menu Install tidak tersedia. Gunakan menu Chrome ⋮ > Install Aplikasi');
-        } else {
-            showToast('Gunakan "Add to Home Screen" dari menu browser');
-        }
-        return;
-    }
+    if (!deferredPrompt) return;
     
-    try {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('Install outcome:', outcome);
-        
-        if (outcome === 'accepted') {
-            showToast('Menginstall aplikasi...');
-        } else {
-            showToast('Install dibatalkan');
-        }
-        deferredPrompt = null;
-    } catch (err) {
-        console.error('Install error:', err);
-        showToast('Error: ' + err.message);
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+        console.log('User accepted install');
     }
-}
-
-// Open in alternative browsers
-function openInSamsung() {
-    const url = window.location.href;
-    // Try to open in Samsung Internet
-    window.location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.sec.android.app.sbrowser;end';
-}
-
-function openInKiwi() {
-    showToast('Silakan install Kiwi Browser dari Play Store, lalu buka URL ini di Kiwi');
-}
-
-function showInstallPrompt() {
-    if (deferredPrompt) {
-        showInstallBanner();
-    } else {
-        // Show manual instructions
-        document.getElementById('installBanner').classList.add('show');
-        document.getElementById('chromeInstructions').classList.add('show');
-    }
-    toggleSettings();
+    deferredPrompt = null;
 }
 
 function showUpdateBanner() {
@@ -1225,71 +826,48 @@ function updateApp() {
     window.location.reload();
 }
 
-// --- PIN SETUP ---
-
-function showPinSetup() {
-    document.getElementById('pinSetupOverlay').classList.add('show');
-    tempPin = '';
-    updatePinDisplay();
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
 }
 
-function enterPin(num) {
-    if (tempPin.length < 4) {
-        tempPin += num;
-        updatePinDisplay();
-    }
-}
+// ==========================================
+// FUNGSI KEAMANAN - DIUPGRADE DENGAN KEYPAD
+// ==========================================
 
-function deletePin() {
-    tempPin = tempPin.slice(0, -1);
-    updatePinDisplay();
-}
-
-function clearPin() {
-    tempPin = '';
-    updatePinDisplay();
-}
-
-function updatePinDisplay() {
-    for (let i = 1; i <= 4; i++) {
-        const digit = document.getElementById('pin' + i);
-        if (i <= tempPin.length) {
-            digit.value = '•';
-            digit.classList.add('filled');
+function initApp(){
+    // Check connection status
+    updateConnectionStatus(navigator.onLine);
+    
+    let savedPIN=localStorage.getItem('auva_pin');
+    if(!savedPIN){
+        let p=prompt("Buat PIN Keamanan Baru (4 digit):");
+        if (p && p.length >= 4) {
+            localStorage.setItem('auva_pin', p);
+            showToast('PIN berhasil dibuat!');
         } else {
-            digit.value = '';
-            digit.classList.remove('filled');
+            localStorage.setItem('auva_pin', '1234');
+            showToast('PIN default: 1234');
         }
     }
-}
-
-function confirmPinSetup() {
-    if (tempPin.length === 4) {
-        localStorage.setItem('auva_pin', tempPin);
-        document.getElementById('pinSetupOverlay').classList.remove('show');
-        showToast('✅ PIN berhasil dibuat!');
-        showLogin();
-    } else {
-        document.getElementById('pinError').textContent = 'PIN harus 4 digit!';
-        document.getElementById('pinError').classList.add('show');
+    let d=localStorage.getItem('auva_kas_data');
+    if(d) dataKas=JSON.parse(d);
+    render();
+    
+    // Check if install banner was dismissed recently
+    const dismissed = localStorage.getItem('auva_install_dismissed');
+    if (dismissed && (Date.now() - dismissed) < 7 * 24 * 60 * 60 * 1000) {
+        // Don't show for 7 days
     }
 }
 
-function skipPinSetup() {
-    localStorage.setItem('auva_pin', '1234');
-    document.getElementById('pinSetupOverlay').classList.remove('show');
-    showToast('PIN default: 1234');
-    showLogin();
-}
-
-// --- LOGIN ---
-
-function showLogin() {
-    document.getElementById('loginPage').style.display = 'flex';
-    document.getElementById('mainApp').style.display = 'none';
-    loginPin = '';
-    updateLoginPinDisplay();
-}
+// ==========================================
+// LOGIN DENGAN KEYPAD PIN - BARU
+// ==========================================
 
 function enterLoginPin(num) {
     if (loginPin.length < 4) {
@@ -1314,151 +892,80 @@ function clearLoginPin() {
 function updateLoginPinDisplay() {
     const dots = document.querySelectorAll('#loginPinDisplay .pin-dot');
     dots.forEach((dot, index) => {
-        dot.classList.toggle('filled', index < loginPin.length);
+        if (index < loginPin.length) {
+            dot.classList.add('filled');
+        } else {
+            dot.classList.remove('filled');
+        }
     });
 }
 
-function cekPIN() {
-    const savedPin = localStorage.getItem('auva_pin') || '1234';
-    if (loginPin === savedPin) {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        showToast('✅ Selamat datang di Auva!');
-        
-        // Show install banner if not standalone and not dismissed
-        if (!isStandalone() && !localStorage.getItem('auva_install_dismissed')) {
-            setTimeout(() => {
-                if (deferredPrompt) {
-                    showInstallBanner();
-                }
-            }, 1000);
-        }
-    } else {
-        showToast('❌ PIN salah!');
+function cekPIN(){
+    if(loginPin === localStorage.getItem('auva_pin')){
+        document.getElementById('loginPage').style.display='none';
+        showToast('Selamat datang di Auva!');
+    } else { 
+        showToast('PIN SALAH!');
         loginPin = '';
         updateLoginPinDisplay();
+        // Shake animation
         const box = document.querySelector('.login-box');
         box.style.animation = 'shake 0.5s';
         setTimeout(() => box.style.animation = '', 500);
     }
 }
 
-// --- INIT ---
-
-function initApp() {
-    window.addEventListener('online', () => updateConnectionStatus(true));
-    window.addEventListener('offline', () => updateConnectionStatus(false));
-    updateConnectionStatus(navigator.onLine);
-    
-    const d = localStorage.getItem('auva_kas_data');
-    if (d) dataKas = JSON.parse(d);
-    render();
-    
-    // Hide install elements if standalone
-    if (isStandalone()) {
-        document.querySelectorAll('.hide-installed').forEach(el => {
-            el.style.display = 'none';
-        });
-    }
-    
-    const savedPin = localStorage.getItem('auva_pin');
-    if (!savedPin) {
-        showPinSetup();
-    } else {
-        showLogin();
+function gantiPIN(){
+    let lama=prompt("Masukkan PIN lama:");
+    if(lama === localStorage.getItem('auva_pin')) {
+        let baru=prompt("PIN baru (4 digit):");
+        if(baru && baru.length >= 4) { 
+            localStorage.setItem('auva_pin', baru); 
+            showToast('PIN berhasil diganti!');
+        } else {
+            alert('PIN minimal 4 digit!');
+        }
+    } else { 
+        alert("PIN Lama Salah!"); 
     }
 }
 
-function updateConnectionStatus(online) {
-    const status = document.getElementById('connectionStatus');
-    const text = document.getElementById('connText');
-    if (online) {
-        status.className = 'connection-status online';
-        text.innerHTML = '<i class="fas fa-wifi"></i> Online';
-        setTimeout(() => status.style.transform = 'translateY(-100%)', 2000);
-    } else {
-        status.style.transform = 'translateY(0)';
-        status.className = 'connection-status offline';
-        text.innerHTML = '<i class="fas fa-wifi-slash"></i> Offline - Data tersimpan lokal';
+function resetPIN(){
+    let master = prompt("Masukkan KODE ADMIN untuk reset (Default: 0000):");
+    if(master === "0000"){
+        let baru = prompt("Masukkan PIN Baru:");
+        if(baru){
+            localStorage.setItem('auva_pin', baru);
+            showToast('PIN berhasil direset!');
+        }
+    } else { 
+        alert("KODE ADMIN SALAH! Gagal reset."); 
     }
 }
 
-// --- SETTINGS ---
+// ==========================================
+// FUNGSI TAB - SAMA KODE ANDA
+// ==========================================
 
-function toggleSettings() {
-    document.getElementById('settingsMenu').classList.toggle('show');
-}
-
-function exportData() {
-    const data = {
-        kas: dataKas,
-        pin: localStorage.getItem('auva_pin'),
-        timestamp: new Date().toISOString()
-    };
-    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'auva-backup-' + new Date().toISOString().slice(0,10) + '.json';
-    a.click();
-    showToast('✅ Data di-export!');
-    toggleSettings();
-}
-
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const data = JSON.parse(event.target.result);
-                if (data.kas) {
-                    dataKas = data.kas;
-                    save();
-                    render();
-                    showToast('✅ Data berhasil di-restore!');
-                }
-            } catch (err) {
-                alert('File tidak valid!');
-            }
-        };
-        reader.readAsText(file);
-    };
-    input.click();
-    toggleSettings();
-}
-
-document.addEventListener('click', (e) => {
-    const menu = document.getElementById('settingsMenu');
-    const btn = document.querySelector('.settings-btn');
-    if (!menu.contains(e.target) && !btn.contains(e.target)) {
-        menu.classList.remove('show');
-    }
-});
-
-// --- TAB ---
-
-function openTab(t, el) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+function openTab(t, el){
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById(t).classList.add('active');
     el.classList.add('active');
 }
 
-// --- CALCULATION ---
+// ==========================================
+// FUNGSI HITUNG - SAMA KODE ANDA
+// ==========================================
 
-function hitungUmroh() {
-    const nJam = parseInt(document.getElementById('totJam').value) || 0;
-    if (nJam <= 0) return alert("Isi jamaah!");
-    
-    const ids = ['cTiket','cLA','cAsuransi','cHandling','cPIC','cAlat','cAplikasi','cLain'];
-    const sub = ids.map(id => parseFloat(document.getElementById(id).value) || 0).reduce((a,b) => a+b, 0);
-    const nFoc = parseInt(document.getElementById('jamGratis').value) || 0;
-    const nTL = parseInt(document.getElementById('numTL').value) || 0;
-    const pPct = (parseFloat(document.getElementById('profitPct').value) || 0) / 100;
+function hitungUmroh(){
+    const nJam=parseInt(document.getElementById('totJam').value)||0;
+    if(nJam<=0)return alert("Isi jamaah!");
+    const ids=['cTiket','cLA','cAsuransi','cHandling','cPIC','cAlat','cAplikasi','cLain'];
+    const sub = ids.map(id=>parseFloat(document.getElementById(id).value)||0).reduce((a,b)=>a+b,0);
+    const nFoc=parseInt(document.getElementById('jamGratis').value)||0;
+    const nTL=parseInt(document.getElementById('numTL').value)||0;
+    const pPct=(parseFloat(document.getElementById('profitPct').value)||0)/100;
           
     const profitKotor = (sub * nJam) * pPct;
     const biayaTL = sub * nTL;
@@ -1467,8 +974,9 @@ function hitungUmroh() {
     const jual = ((sub * nJam) + profitKotor) / (nJam - nFoc);
     const totalOmzet = jual * (nJam - nFoc);
           
-    const f = n => "Rp " + Math.round(n).toLocaleString('id-ID');
+    const f=n=>"Rp "+Math.round(n).toLocaleString('id-ID');
 
+    // Simpan text untuk copy
     const lokasi = document.getElementById('lokasiPaket').value;
     const garis = "━━━━━━━━━━━━━━━━━━";
     lastCalculatedText = 
@@ -1480,8 +988,8 @@ ${garis}
 ${garis}
 📞 *Silakan hubungi admin untuk detail.*`;
 
-    const hasil = document.getElementById('hasil');
-    hasil.innerHTML = `
+    let hasil = document.getElementById('hasil');
+    hasil.innerHTML=`
         <div class="res-item"><span>Modal Pokok / Pax</span><b>${f(sub)}</b></div>
         <div class="res-item"><span>Total Omzet Grup</span><b>${f(totalOmzet)}</b></div>
         <div class="res-item"><span>Profit Kotor Grup</span><span>${f(profitKotor)}</span></div>
@@ -1497,11 +1005,13 @@ ${garis}
         <button class="btn" onclick="salinRingkasan()" style="background:#34495e; margin-top:15px; font-size:14px;">
             <i class="fas fa-clipboard"></i> SALIN RINGKASAN HARGA
         </button>`;
-    hasil.style.display = 'block';
+    hasil.style.display='block';
     hasil.scrollIntoView({behavior: "smooth"});
 }
 
-// --- COPY ---
+// ==========================================
+// FUNGSI SALIN - DIPERBAIKI DENGAN FALLBACK
+// ==========================================
 
 function salinRingkasan() {
     if (!lastCalculatedText) {
@@ -1509,33 +1019,50 @@ function salinRingkasan() {
         return;
     }
 
+    // Method 1: Modern Clipboard API (HTTPS only)
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(lastCalculatedText)
-            .then(() => showToast("✅ Ringkasan disalin!"))
-            .catch(() => fallbackCopy(lastCalculatedText));
+            .then(() => {
+                showToast("✅ Ringkasan disalin ke clipboard!");
+            })
+            .catch((err) => {
+                console.log('Clipboard API failed:', err);
+                fallbackCopy(lastCalculatedText);
+            });
     } else {
+        // Method 2: Fallback untuk HTTP atau browser lama
         fallbackCopy(lastCalculatedText);
     }
 }
 
 function fallbackCopy(text) {
+    // Buat textarea hidden
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed';
     textarea.style.left = '-9999px';
+    textarea.style.top = '0';
     document.body.appendChild(textarea);
+    
+    // Select text
     textarea.focus();
     textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile
     
     try {
+        // Method 2: execCommand (deprecated tapi masih works di banyak browser)
         const successful = document.execCommand('copy');
-        document.body.removeChild(textarea);
+        
         if (successful) {
             showToast("✅ Ringkasan disalin!");
+            document.body.removeChild(textarea);
         } else {
+            // Method 3: Tampilkan overlay manual copy
+            document.body.removeChild(textarea);
             showManualCopy(text);
         }
     } catch (err) {
+        console.log('execCommand failed:', err);
         document.body.removeChild(textarea);
         showManualCopy(text);
     }
@@ -1544,107 +1071,96 @@ function fallbackCopy(text) {
 function showManualCopy(text) {
     document.getElementById('manualCopyText').value = text;
     document.getElementById('copyOverlay').classList.add('show');
+    
+    // Auto select text
+    setTimeout(() => {
+        const textarea = document.getElementById('manualCopyText');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+    }, 100);
 }
 
 function closeCopyOverlay() {
     document.getElementById('copyOverlay').classList.remove('show');
 }
 
-// --- KAS REAL ---
+// ==========================================
+// FUNGSI KAS REAL - SAMA PERSIS KODE ANDA
+// ==========================================
 
-function tambah() {
-    let k = document.getElementById('ketReal').value;
-    let n = parseInt(document.getElementById('nomReal').value) || 0;
-    let t = document.getElementById('tipeReal').value;
-    if (!k || n <= 0) return alert("Isi data!");
+function tambah(){
+    let k=document.getElementById('ketReal').value;
+    let n=parseInt(document.getElementById('nomReal').value)||0;
+    let t=document.getElementById('tipeReal').value;
+    if(!k || n<=0) return alert("Isi data!");
     
     dataKas.push({
-        id: Date.now(), 
-        tgl: new Date().toLocaleDateString('id-ID'), 
-        ket: k, 
-        nom: n, 
-        tipe: t
+        id:Date.now(), 
+        tgl:new Date().toLocaleDateString('id-ID'), 
+        ket:k, 
+        nom:n, 
+        tipe:t
     });
     save();
-    document.getElementById('ketReal').value = ""; 
-    document.getElementById('nomReal').value = "";
-    showToast('✅ Transaksi ditambahkan!');
+    document.getElementById('ketReal').value=""; 
+    document.getElementById('nomReal').value="";
+    showToast('Transaksi berhasil ditambahkan!');
 }
 
-function save() {
+function save(){
     localStorage.setItem('auva_kas_data', JSON.stringify(dataKas));
     render();
+    
+    // Sync jika online
+    if (navigator.onLine && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((registration) => {
+            if ('sync' in registration) {
+                registration.sync.register('sync-kas');
+            }
+        });
+    }
 }
 
-function render() {
-    let body = document.getElementById('bodyKas');
-    body.innerHTML = "";
-    let masuk = 0, keluar = 0;
-    dataKas.forEach(i => {
-        if (i.tipe === 'masuk') masuk += i.nom; else keluar += i.nom;
-        body.innerHTML += `<tr>
+function render(){
+    let body=document.getElementById('bodyKas');
+    body.innerHTML="";
+    let masuk=0, keluar=0;
+    dataKas.forEach(i=>{
+        if(i.tipe==='masuk') masuk+=i.nom; else keluar+=i.nom;
+        body.innerHTML+=`<tr>
             <td>${i.tgl}</td>
             <td>${i.ket}</td>
             <td class="${i.tipe==='masuk'?'txt-in':'txt-out'}">${i.nom.toLocaleString('id-ID')}</td>
             <td><button class="btn-del" onclick="hapus(${i.id})"><i class="fas fa-trash"></i></button></td>
         </tr>`;
     });
-    document.getElementById('summary').innerHTML = `<b>Saldo Akhir: Rp ${(masuk-keluar).toLocaleString('id-ID')}</b>`;
+    document.getElementById('summary').innerHTML=`<b>Saldo Akhir: Rp ${(masuk-keluar).toLocaleString('id-ID')}</b>`;
 }
 
-function hapus(id) {
-    if (confirm("Hapus baris?")) { 
-        dataKas = dataKas.filter(x => x.id !== id); 
+function hapus(id){
+    if(confirm("Hapus baris?")) { 
+        dataKas=dataKas.filter(x=>x.id!==id); 
         save(); 
-        showToast('✅ Transaksi dihapus');
+        showToast('Transaksi dihapus');
     }
 }
 
 function resetData() {
-    if (confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) {
+    if(confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) {
         dataKas = [];
         save();
-        showToast('✅ Buku kas dikosongkan');
+        showToast('Buku kas dikosongkan');
     }
 }
 
-// --- PIN FUNCTIONS ---
-
-function gantiPIN() {
-    let lama = prompt("Masukkan PIN lama:");
-    const savedPin = localStorage.getItem('auva_pin') || '1234';
-    if (lama === savedPin) {
-        let baru = prompt("PIN baru (4 digit):");
-        if (baru && baru.length === 4 && /^\d{4}$/.test(baru)) {
-            localStorage.setItem('auva_pin', baru);
-            showToast('✅ PIN berhasil diganti!');
-        } else {
-            alert('PIN harus 4 digit angka!');
-        }
-    } else {
-        alert("PIN Lama Salah!");
-    }
-}
-
-function resetPIN() {
-    let master = prompt("Masukkan KODE ADMIN (Default: 0000):");
-    if (master === "0000") {
-        let baru = prompt("Masukkan PIN Baru (4 digit):");
-        if (baru && baru.length === 4 && /^\d{4}$/.test(baru)) {
-            localStorage.setItem('auva_pin', baru);
-            showToast('✅ PIN berhasil direset!');
-        }
-    } else {
-        alert("KODE ADMIN SALAH!");
-    }
-}
-
-// --- EXCEL ---
+// ==========================================
+// FUNGSI EXCEL - SAMA PERSIS KODE ANDA
+// ==========================================
 
 function downloadExcel() {
-    if (dataKas.length === 0) return alert("Data kosong!");
+    if(dataKas.length === 0) return alert("Data kosong!");
     let namaGrup = prompt("Nama Rombongan:", "Laporan_Auva");
-    if (!namaGrup) return;
+    if(!namaGrup) return;
 
     const wb = XLSX.utils.book_new();
     const ws1Data = dataKas.map(i => ({ 
@@ -1656,23 +1172,14 @@ function downloadExcel() {
     const ws1 = XLSX.utils.json_to_sheet(ws1Data);
     XLSX.utils.book_append_sheet(wb, ws1, "Detail Transaksi");
 
-    let inTotal = dataKas.filter(i => i.tipe === 'masuk').reduce((a,b) => a+b.nom, 0);
-    let outTotal = dataKas.filter(i => i.tipe === 'keluar').reduce((a,b) => a+b.nom, 0);
+    let inTotal = dataKas.filter(i=>i.tipe==='masuk').reduce((a,b)=>a+b.nom,0);
+    let outTotal = dataKas.filter(i=>i.tipe==='keluar').reduce((a,b)=>a+b.nom,0);
     const ws2Data = [{ Pemasukan: inTotal, Pengeluaran: outTotal, Saldo: inTotal-outTotal }];
     const ws2 = XLSX.utils.json_to_sheet(ws2Data);
     XLSX.utils.book_append_sheet(wb, ws2, "Rekapan");
 
     XLSX.writeFile(wb, namaGrup + ".xlsx");
-    showToast('✅ Excel berhasil di-download!');
-}
-
-// --- TOAST ---
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.innerHTML = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
+    showToast('Excel berhasil di-download!');
 }
 
 // Add shake animation
