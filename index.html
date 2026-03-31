@@ -11,17 +11,13 @@
     
     <title>Auva Kbihu AU</title>
 
-    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- Icons -->
     <link rel="icon" href="https://img.icons8.com/color/96/kaaba.png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/kaaba.png">
     
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- SheetJS untuk Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
@@ -556,17 +552,14 @@
 </head>
 
 <body onload="initApp()">
-    <!-- Connection Status -->
     <div id="connectionStatus" class="connection-status online">
         <i class="fas fa-wifi"></i> <span id="connText">Online</span>
     </div>
     
-    <!-- Update Available Banner -->
     <div id="updateBanner" class="update-banner">
         Update tersedia! <button onclick="updateApp()">Update Sekarang</button>
     </div>
     
-    <!-- Install Banner - Sama persis kode Anda -->
     <div id="installBanner" class="install-banner">
         <div class="text">
             <h4><i class="fas fa-kaaba"></i> Install Auva</h4>
@@ -576,9 +569,6 @@
         <button class="btn-close" onclick="closeInstallBanner()">&times;</button>
     </div>
 
-    <!-- ========================================== -->
-    <!-- LOGIN PAGE - DIUPGRADE DENGAN KEYPAD PIN -->
-    <!-- ========================================== -->
     <div id="loginPage">
         <div class="login-box">
             <div class="login-icon"><i class="fas fa-kaaba"></i></div>
@@ -613,7 +603,6 @@
         </div>
     </div>
 
-    <!-- Manual Copy Overlay -->
     <div id="copyOverlay" class="copy-overlay">
         <div class="copy-box">
             <h3><i class="fas fa-copy"></i> Salin Ringkasan</h3>
@@ -677,9 +666,6 @@
         <div id="hasil" class="res-card"></div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MENU PENCATATAN REAL - SEMUA FITUR ASLI ANDA ADA -->
-    <!-- ========================================== -->
     <div id="real" class="tab-content">
         <div class="card">
             <h2>Pencatatan REAL</h2>
@@ -718,7 +704,6 @@
 
     <footer>&copy; 2026 Auva Kbihu AU</footer>
     
-    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
 <script>
@@ -728,17 +713,16 @@ let lastCalculatedText = '';
 let loginPin = '';
 
 // ==========================================
-// PWA FUNCTIONS - SAMA PERSIS KODE ANDA
+// PWA FUNCTIONS - DIPERBAIKI UNTUK INSTALL
 // ==========================================
 
-// Register Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        // Mendaftarkan sw.js yang harus ada di folder yang sama
         navigator.serviceWorker.register('sw.js')
             .then((registration) => {
-                console.log('SW registered:', registration);
+                console.log('SW terdaftar:', registration);
                 
-                // Check for updates
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     newWorker.addEventListener('statechange', () => {
@@ -749,27 +733,26 @@ if ('serviceWorker' in navigator) {
                 });
             })
             .catch((error) => {
-                console.log('SW registration failed:', error);
+                console.log('SW gagal:', error);
             });
     });
 }
 
-// Listen for beforeinstallprompt
 window.addEventListener('beforeinstallprompt', (e) => {
+    // Mencegah Chrome memunculkan prompt otomatis
     e.preventDefault();
+    // Simpan event agar bisa dipicu tombol "Install" buatan kita
     deferredPrompt = e;
     showInstallBanner();
 });
 
-// Check if app is installed
 window.addEventListener('appinstalled', () => {
-    console.log('Auva was installed');
+    console.log('Auva terpasang');
     deferredPrompt = null;
     hideInstallBanner();
     showToast('Auva berhasil di-install!');
 });
 
-// Online/Offline detection
 window.addEventListener('online', () => updateConnectionStatus(true));
 window.addEventListener('offline', () => updateConnectionStatus(false));
 
@@ -791,7 +774,6 @@ function updateConnectionStatus(online) {
 }
 
 function showInstallBanner() {
-    // Only show if not already installed
     if (!window.matchMedia('(display-mode: standalone)').matches) {
         document.getElementById('installBanner').classList.add('show');
     }
@@ -813,7 +795,7 @@ async function installApp() {
     const { outcome } = await deferredPrompt.userChoice;
     
     if (outcome === 'accepted') {
-        console.log('User accepted install');
+        console.log('User mengizinkan instalasi');
     }
     deferredPrompt = null;
 }
@@ -836,11 +818,10 @@ function showToast(message) {
 }
 
 // ==========================================
-// FUNGSI KEAMANAN - DIUPGRADE DENGAN KEYPAD
+// FUNGSI KEAMANAN & INISIALISASI
 // ==========================================
 
 function initApp(){
-    // Check connection status
     updateConnectionStatus(navigator.onLine);
     
     let savedPIN=localStorage.getItem('auva_pin');
@@ -858,16 +839,11 @@ function initApp(){
     if(d) dataKas=JSON.parse(d);
     render();
     
-    // Check if install banner was dismissed recently
     const dismissed = localStorage.getItem('auva_install_dismissed');
     if (dismissed && (Date.now() - dismissed) < 7 * 24 * 60 * 60 * 1000) {
-        // Don't show for 7 days
+        // Banner disembunyikan sementara jika baru saja ditutup
     }
 }
-
-// ==========================================
-// LOGIN DENGAN KEYPAD PIN - BARU
-// ==========================================
 
 function enterLoginPin(num) {
     if (loginPin.length < 4) {
@@ -908,7 +884,6 @@ function cekPIN(){
         showToast('PIN SALAH!');
         loginPin = '';
         updateLoginPinDisplay();
-        // Shake animation
         const box = document.querySelector('.login-box');
         box.style.animation = 'shake 0.5s';
         setTimeout(() => box.style.animation = '', 500);
@@ -943,20 +918,12 @@ function resetPIN(){
     }
 }
 
-// ==========================================
-// FUNGSI TAB - SAMA KODE ANDA
-// ==========================================
-
 function openTab(t, el){
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById(t).classList.add('active');
     el.classList.add('active');
 }
-
-// ==========================================
-// FUNGSI HITUNG - SAMA KODE ANDA
-// ==========================================
 
 function hitungUmroh(){
     const nJam=parseInt(document.getElementById('totJam').value)||0;
@@ -976,7 +943,6 @@ function hitungUmroh(){
           
     const f=n=>"Rp "+Math.round(n).toLocaleString('id-ID');
 
-    // Simpan text untuk copy
     const lokasi = document.getElementById('lokasiPaket').value;
     const garis = "━━━━━━━━━━━━━━━━━━";
     lastCalculatedText = 
@@ -1009,60 +975,40 @@ ${garis}
     hasil.scrollIntoView({behavior: "smooth"});
 }
 
-// ==========================================
-// FUNGSI SALIN - DIPERBAIKI DENGAN FALLBACK
-// ==========================================
-
 function salinRingkasan() {
     if (!lastCalculatedText) {
         showToast('Silakan hitung estimasi dulu!');
         return;
     }
-
-    // Method 1: Modern Clipboard API (HTTPS only)
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(lastCalculatedText)
-            .then(() => {
-                showToast("✅ Ringkasan disalin ke clipboard!");
-            })
-            .catch((err) => {
-                console.log('Clipboard API failed:', err);
-                fallbackCopy(lastCalculatedText);
-            });
+            .then(() => { showToast("✅ Ringkasan disalin ke clipboard!"); })
+            .catch((err) => { fallbackCopy(lastCalculatedText); });
     } else {
-        // Method 2: Fallback untuk HTTP atau browser lama
         fallbackCopy(lastCalculatedText);
     }
 }
 
 function fallbackCopy(text) {
-    // Buat textarea hidden
     const textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed';
     textarea.style.left = '-9999px';
     textarea.style.top = '0';
     document.body.appendChild(textarea);
-    
-    // Select text
     textarea.focus();
     textarea.select();
-    textarea.setSelectionRange(0, 99999); // For mobile
-    
+    textarea.setSelectionRange(0, 99999);
     try {
-        // Method 2: execCommand (deprecated tapi masih works di banyak browser)
         const successful = document.execCommand('copy');
-        
         if (successful) {
             showToast("✅ Ringkasan disalin!");
             document.body.removeChild(textarea);
         } else {
-            // Method 3: Tampilkan overlay manual copy
             document.body.removeChild(textarea);
             showManualCopy(text);
         }
     } catch (err) {
-        console.log('execCommand failed:', err);
         document.body.removeChild(textarea);
         showManualCopy(text);
     }
@@ -1071,8 +1017,6 @@ function fallbackCopy(text) {
 function showManualCopy(text) {
     document.getElementById('manualCopyText').value = text;
     document.getElementById('copyOverlay').classList.add('show');
-    
-    // Auto select text
     setTimeout(() => {
         const textarea = document.getElementById('manualCopyText');
         textarea.select();
@@ -1084,23 +1028,12 @@ function closeCopyOverlay() {
     document.getElementById('copyOverlay').classList.remove('show');
 }
 
-// ==========================================
-// FUNGSI KAS REAL - SAMA PERSIS KODE ANDA
-// ==========================================
-
 function tambah(){
     let k=document.getElementById('ketReal').value;
     let n=parseInt(document.getElementById('nomReal').value)||0;
     let t=document.getElementById('tipeReal').value;
     if(!k || n<=0) return alert("Isi data!");
-    
-    dataKas.push({
-        id:Date.now(), 
-        tgl:new Date().toLocaleDateString('id-ID'), 
-        ket:k, 
-        nom:n, 
-        tipe:t
-    });
+    dataKas.push({ id:Date.now(), tgl:new Date().toLocaleDateString('id-ID'), ket:k, nom:n, tipe:t });
     save();
     document.getElementById('ketReal').value=""; 
     document.getElementById('nomReal').value="";
@@ -1110,15 +1043,6 @@ function tambah(){
 function save(){
     localStorage.setItem('auva_kas_data', JSON.stringify(dataKas));
     render();
-    
-    // Sync jika online
-    if (navigator.onLine && 'serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then((registration) => {
-            if ('sync' in registration) {
-                registration.sync.register('sync-kas');
-            }
-        });
-    }
 }
 
 function render(){
@@ -1138,51 +1062,31 @@ function render(){
 }
 
 function hapus(id){
-    if(confirm("Hapus baris?")) { 
-        dataKas=dataKas.filter(x=>x.id!==id); 
-        save(); 
-        showToast('Transaksi dihapus');
-    }
+    if(confirm("Hapus baris?")) { dataKas=dataKas.filter(x=>x.id!==id); save(); showToast('Transaksi dihapus'); }
 }
 
 function resetData() {
-    if(confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) {
-        dataKas = [];
-        save();
-        showToast('Buku kas dikosongkan');
-    }
+    if(confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) { dataKas = []; save(); showToast('Buku kas dikosongkan'); }
 }
-
-// ==========================================
-// FUNGSI EXCEL - SAMA PERSIS KODE ANDA
-// ==========================================
 
 function downloadExcel() {
     if(dataKas.length === 0) return alert("Data kosong!");
     let namaGrup = prompt("Nama Rombongan:", "Laporan_Auva");
     if(!namaGrup) return;
-
     const wb = XLSX.utils.book_new();
-    const ws1Data = dataKas.map(i => ({ 
-        Tanggal: i.tgl, 
-        Keterangan: i.ket, 
-        Tipe: i.tipe.toUpperCase(), 
-        Nominal: i.nom 
-    }));
+    const ws1Data = dataKas.map(i => ({ Tanggal: i.tgl, Keterangan: i.ket, Tipe: i.tipe.toUpperCase(), Nominal: i.nom }));
     const ws1 = XLSX.utils.json_to_sheet(ws1Data);
     XLSX.utils.book_append_sheet(wb, ws1, "Detail Transaksi");
-
     let inTotal = dataKas.filter(i=>i.tipe==='masuk').reduce((a,b)=>a+b.nom,0);
     let outTotal = dataKas.filter(i=>i.tipe==='keluar').reduce((a,b)=>a+b.nom,0);
     const ws2Data = [{ Pemasukan: inTotal, Pengeluaran: outTotal, Saldo: inTotal-outTotal }];
     const ws2 = XLSX.utils.json_to_sheet(ws2Data);
     XLSX.utils.book_append_sheet(wb, ws2, "Rekapan");
-
     XLSX.writeFile(wb, namaGrup + ".xlsx");
     showToast('Excel berhasil di-download!');
 }
 
-// Add shake animation
+// Tambahan animasi shake untuk login
 const style = document.createElement('style');
 style.textContent = `
 @keyframes shake {
