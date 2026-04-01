@@ -11,7 +11,7 @@
     
     <title>Auva Kbihu AU</title>
 
-    <!-- MANIFEST INLINE - INI KUNCI UTAMANYA! -->
+    <!-- MANIFEST INLINE -->
     <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Auva%20Kbihu%20AU%22,%22short_name%22:%22Auva%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%231a5d4a%22,%22theme_color%22:%22%231a5d4a%22,%22icons%22:[{%22src%22:%22https://img.icons8.com/color/192/kaaba.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://img.icons8.com/color/512/kaaba.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
     
     <!-- Icons -->
@@ -23,6 +23,10 @@
     
     <!-- SheetJS untuk Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- jsPDF untuk PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         :root { 
@@ -33,6 +37,9 @@
             --red: #e74c3c; 
             --green: #2ecc71; 
             --dark: #2c3e50;
+            --blue: #3498db;
+            --orange: #e67e22;
+            --purple: #9b59b6;
         }
         
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -44,6 +51,82 @@
             margin: 0; 
             color: #333; 
             overscroll-behavior: none;
+        }
+        
+        /* Splash Screen */
+        #splashScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, #0d3328 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        
+        #splashScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .splash-logo img {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .splash-text {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .splash-sub {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        .splash-loader {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        
+        .splash-loader-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            border-radius: 2px;
+            animation: loading 2s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
         }
         
         /* Install Banner */
@@ -85,6 +168,29 @@
             color: white;
             font-size: 20px;
             cursor: pointer;
+        }
+        
+        /* Offline Indicator */
+        .offline-indicator {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #e74c3c;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            z-index: 9999;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .offline-indicator.show { display: block; }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
         }
         
         .tab-menu { 
@@ -203,6 +309,11 @@
         .btn:active { transform: scale(0.98); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
+        .btn-blue { background: var(--blue) !important; }
+        .btn-orange { background: var(--orange) !important; }
+        .btn-purple { background: var(--purple) !important; }
+        .btn-small { font-size: 13px; padding: 12px; }
+        
         .res-card { 
             background: var(--primary); 
             color: white; 
@@ -300,124 +411,6 @@
             padding-bottom: 100px; 
         }
         
-        /* LOGIN PAGE - DIUPGRADE DENGAN KEYPAD PIN */
-        #loginPage { 
-            position: fixed; 
-            inset: 0; 
-            background: linear-gradient(135deg, var(--primary) 0%, #0d3328 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 9999; 
-        }
-        
-        .login-box { 
-            background: white; 
-            padding: 40px 30px; 
-            border-radius: 20px; 
-            width: 85%; 
-            max-width: 320px; 
-            text-align: center; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        
-        .login-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 40px;
-            color: white;
-        }
-        
-        .login-box h3 {
-            margin: 0 0 10px 0;
-            color: var(--primary);
-            font-size: 24px;
-        }
-        
-        .login-box p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-        
-        .pin-display {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-        
-        .pin-dot {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ddd;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        
-        .pin-dot.filled {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-        
-        .pin-keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .key-btn {
-            padding: 20px;
-            border: none;
-            background: #f8f9fa;
-            border-radius: 12px;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--dark);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .key-btn:active {
-            background: var(--primary);
-            color: white;
-            transform: scale(0.95);
-        }
-        
-        .key-btn.del {
-            background: #fee;
-            color: var(--red);
-        }
-        
-        .btn-login {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
         .toast {
             position: fixed;
             bottom: 80px;
@@ -495,10 +488,54 @@
             color: white;
             width: 100%;
         }
+        
+        .backup-info {
+            background: #e3f2fd;
+            border-left: 4px solid var(--blue);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: #1565c0;
+        }
+        
+        .backup-info i {
+            margin-right: 5px;
+        }
+        
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--green);
+            margin-left: 10px;
+        }
+        
+        .sync-status.offline {
+            color: var(--red);
+        }
     </style>
 </head>
 
 <body onload="initApp()">
+    <!-- Splash Screen -->
+    <div id="splashScreen">
+        <div class="splash-logo">
+            <img src="https://img.icons8.com/color/96/kaaba.png" alt="Auva">
+        </div>
+        <div class="splash-text">Auva</div>
+        <div class="splash-sub">Kbihu AU</div>
+        <div class="splash-loader">
+            <div class="splash-loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator">
+        <i class="fas fa-wifi-slash"></i> Anda sedang offline. Data tetap tersimpan lokal.
+    </div>
+
     <!-- Install Banner -->
     <div id="installBanner" class="install-banner">
         <div class="text">
@@ -507,41 +544,6 @@
         </div>
         <button class="btn-install" onclick="installApp()">Install</button>
         <button class="btn-close" onclick="closeInstallBanner()">&times;</button>
-    </div>
-
-    <!-- LOGIN PAGE -->
-    <div id="loginPage">
-        <div class="login-box">
-            <div class="login-icon"><i class="fas fa-kaaba"></i></div>
-            <h3>Selamat Datang</h3>
-            <p>Masukkan PIN untuk melanjutkan</p>
-            
-            <div class="pin-display" id="loginPinDisplay">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-            </div>
-            
-            <div class="pin-keypad">
-                <button class="key-btn" onclick="enterLoginPin(1)">1</button>
-                <button class="key-btn" onclick="enterLoginPin(2)">2</button>
-                <button class="key-btn" onclick="enterLoginPin(3)">3</button>
-                <button class="key-btn" onclick="enterLoginPin(4)">4</button>
-                <button class="key-btn" onclick="enterLoginPin(5)">5</button>
-                <button class="key-btn" onclick="enterLoginPin(6)">6</button>
-                <button class="key-btn" onclick="enterLoginPin(7)">7</button>
-                <button class="key-btn" onclick="enterLoginPin(8)">8</button>
-                <button class="key-btn" onclick="enterLoginPin(9)">9</button>
-                <button class="key-btn" onclick="clearLoginPin()" style="font-size: 16px;"><i class="fas fa-undo"></i></button>
-                <button class="key-btn" onclick="enterLoginPin(0)">0</button>
-                <button class="key-btn del" onclick="deleteLoginPin()"><i class="fas fa-backspace"></i></button>
-            </div>
-            
-            <button class="btn-login" onclick="cekPIN()">
-                <i class="fas fa-lock"></i> MASUK
-            </button>
-        </div>
     </div>
 
     <!-- Manual Copy Overlay -->
@@ -610,7 +612,11 @@
 
     <div id="real" class="tab-content">
         <div class="card">
-            <h2>Pencatatan REAL</h2>
+            <h2>Pencatatan REAL 
+                <span id="syncStatus" class="sync-status">
+                    <i class="fas fa-check-circle"></i> Online
+                </span>
+            </h2>
             <div class="section-title">Input Transaksi</div>
             <input id="ketReal" placeholder="Keterangan" style="margin-bottom:10px;">
             <div class="row">
@@ -629,17 +635,38 @@
                     <tbody id="bodyKas"></tbody>
                 </table>
             </div>
-            <button class="btn" onclick="downloadExcel()" style="background:#27ae60">
-                <i class="fas fa-download"></i> DOWNLOAD LAPORAN (.xlsx)
-            </button>
+            
+            <!-- BACKUP & RESTORE SECTION -->
+            <div class="section-title">Backup & Restore Data</div>
+            <div class="backup-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Backup:</strong> Simpan semua data kas ke file.<br>
+                <i class="fas fa-info-circle" style="visibility:hidden"></i>
+                <strong>Restore:</strong> Pulihkan data dari file backup.
+            </div>
+            <div class="row">
+                <button class="btn btn-blue btn-small" onclick="backupData()" style="flex:1; margin-top:0;">
+                    <i class="fas fa-download"></i> BACKUP
+                </button>
+                <button class="btn btn-orange btn-small" onclick="document.getElementById('restoreFile').click()" style="flex:1; margin-top:0;">
+                    <i class="fas fa-upload"></i> RESTORE
+                </button>
+            </div>
+            <input type="file" id="restoreFile" accept=".auvabackup,.json" style="display:none" onchange="restoreData(this)">
+            
+            <!-- EXPORT SECTION -->
+            <div class="section-title">Export Laporan</div>
+            <div class="row">
+                <button class="btn btn-purple btn-small" onclick="exportPDF()" style="flex:1; margin-top:0;">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button class="btn btn-small" onclick="downloadExcel()" style="flex:1; margin-top:0; background:#27ae60;">
+                    <i class="fas fa-file-excel"></i> EXCEL
+                </button>
+            </div>
+            
             <button class="btn" onclick="resetData()" style="background:var(--red); font-size:12px; margin-top:20px;">
                 <i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS (PINDAH ROMBONGAN)
-            </button>
-            <button class="btn" onclick="gantiPIN()" style="background:#95a5a6; font-size:11px; margin-top:10px;">
-                <i class="fas fa-key"></i> GANTI PIN
-            </button>
-            <button class="btn" onclick="resetPIN()" style="background:#f39c12; font-size:11px; margin-top:10px;">
-                <i class="fas fa-undo"></i> RESET PIN (LUPA)
             </button>
         </div>
     </div>
@@ -649,10 +676,91 @@
     <div id="toast" class="toast"></div>
 
 <script>
+// ==================== SERVICE WORKER ====================
+const SW_CODE = `
+const CACHE_NAME = 'auva-v1';
+const STATIC_ASSETS = [
+    '/',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js',
+    'https://img.icons8.com/color/96/kaaba.png'
+];
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(STATIC_ASSETS);
+        })
+    );
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames
+                    .filter((name) => name !== CACHE_NAME)
+                    .map((name) => caches.delete(name))
+            );
+        })
+    );
+    self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+    // Skip non-GET requests
+    if (event.request.method !== 'GET') return;
+    
+    // Skip chrome-extension requests
+    if (event.request.url.startsWith('chrome-extension://')) return;
+    
+    event.respondWith(
+        caches.match(event.request).then((cached) => {
+            if (cached) {
+                return cached;
+            }
+            return fetch(event.request)
+                .then((response) => {
+                    // Don't cache if not valid response
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response;
+                    }
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseToCache);
+                    });
+                    return response;
+                })
+                .catch(() => {
+                    // Return offline fallback if available
+                    return new Response('Offline mode - Data tersimpan lokal');
+                });
+        })
+    );
+});
+`;
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    const blob = new Blob([SW_CODE], { type: 'application/javascript' });
+    const swUrl = URL.createObjectURL(blob);
+    
+    navigator.serviceWorker.register(swUrl)
+        .then((registration) => {
+            console.log('SW registered:', registration);
+        })
+        .catch((error) => {
+            console.log('SW registration failed:', error);
+        });
+}
+
+// ==================== APP LOGIC ====================
 let dataKas=[];
 let deferredPrompt = null;
 let lastCalculatedText = '';
-let loginPin = '';
 
 // PWA - Install Prompt
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -666,6 +774,30 @@ window.addEventListener('appinstalled', () => {
     hideInstallBanner();
     showToast('Auva berhasil di-install!');
 });
+
+// Online/Offline Detection
+window.addEventListener('online', () => {
+    document.getElementById('offlineIndicator').classList.remove('show');
+    updateSyncStatus(true);
+    showToast('🌐 Kembali online!');
+});
+
+window.addEventListener('offline', () => {
+    document.getElementById('offlineIndicator').classList.add('show');
+    updateSyncStatus(false);
+    showToast('📴 Mode offline - data tetap tersimpan');
+});
+
+function updateSyncStatus(isOnline) {
+    const status = document.getElementById('syncStatus');
+    if (isOnline) {
+        status.innerHTML = '<i class="fas fa-check-circle"></i> Online';
+        status.classList.remove('offline');
+    } else {
+        status.innerHTML = '<i class="fas fa-wifi-slash"></i> Offline';
+        status.classList.add('offline');
+    }
+}
 
 function showInstallBanner() {
     if (!window.matchMedia('(display-mode: standalone)').matches) {
@@ -696,101 +828,206 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// Login dengan Keypad
+// Init App
 function initApp(){
-    let savedPIN=localStorage.getItem('auva_pin');
-    if(!savedPIN){
-        let p=prompt("Buat PIN Keamanan Baru (4 digit):");
-        if (p && p.length >= 4) {
-            localStorage.setItem('auva_pin', p);
-            showToast('PIN berhasil dibuat!');
-        } else {
-            localStorage.setItem('auva_pin', '1234');
-            showToast('PIN default: 1234');
-        }
+    // Hide splash screen after 2 seconds
+    setTimeout(() => {
+        document.getElementById('splashScreen').classList.add('hidden');
+    }, 2000);
+    
+    // Check online status
+    if (!navigator.onLine) {
+        document.getElementById('offlineIndicator').classList.add('show');
+        updateSyncStatus(false);
     }
+    
+    // Load data
     let d=localStorage.getItem('auva_kas_data');
     if(d) dataKas=JSON.parse(d);
     render();
     
+    // Check install banner dismissed
     const dismissed = localStorage.getItem('auva_install_dismissed');
     if (dismissed && (Date.now() - dismissed) < 7 * 24 * 60 * 60 * 1000) {
         // Don't show for 7 days
     }
 }
 
-function enterLoginPin(num) {
-    if (loginPin.length < 4) {
-        loginPin += num;
-        updateLoginPinDisplay();
-        if (loginPin.length === 4) {
-            setTimeout(cekPIN, 300);
-        }
+// ==================== BACKUP & RESTORE ====================
+
+function backupData() {
+    if (dataKas.length === 0) {
+        alert("Tidak ada data untuk di-backup!");
+        return;
     }
+    
+    const backupObj = {
+        app: "Auva Kbihu AU",
+        version: "1.0",
+        created: new Date().toISOString(),
+        data: dataKas
+    };
+    
+    const jsonStr = JSON.stringify(backupObj, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Auva_Backup_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.auvabackup`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast(`✅ Backup berhasil! ${dataKas.length} transaksi tersimpan`);
 }
 
-function deleteLoginPin() {
-    loginPin = loginPin.slice(0, -1);
-    updateLoginPinDisplay();
+function restoreData(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    input.value = '';
+    
+    if (!confirm("⚠️ PERINGATAN: Data saat ini akan ditimpa dengan data backup!\n\nLanjutkan restore?")) {
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const backup = JSON.parse(e.target.result);
+            
+            if (!backup.app || !backup.data || !Array.isArray(backup.data)) {
+                throw new Error("Format file tidak valid!");
+            }
+            
+            if (backup.app !== "Auva Kbihu AU") {
+                throw new Error("File bukan backup Auva yang valid!");
+            }
+            
+            const jumlahTransaksi = backup.data.length;
+            if (!confirm(`Restore ${jumlahTransaksi} transaksi dari backup?\nTanggal backup: ${new Date(backup.created).toLocaleString('id-ID')}`)) {
+                return;
+            }
+            
+            dataKas = backup.data;
+            save();
+            
+            showToast(`✅ Restore berhasil! ${jumlahTransaksi} transaksi dipulihkan`);
+            
+        } catch (err) {
+            alert("❌ Gagal restore: " + err.message);
+        }
+    };
+    
+    reader.onerror = function() {
+        alert("❌ Gagal membaca file!");
+    };
+    
+    reader.readAsText(file);
 }
 
-function clearLoginPin() {
-    loginPin = '';
-    updateLoginPinDisplay();
-}
+// ==================== EXPORT PDF ====================
 
-function updateLoginPinDisplay() {
-    const dots = document.querySelectorAll('#loginPinDisplay .pin-dot');
-    dots.forEach((dot, index) => {
-        if (index < loginPin.length) {
-            dot.classList.add('filled');
-        } else {
-            dot.classList.remove('filled');
+function exportPDF() {
+    if (dataKas.length === 0) {
+        alert("Tidak ada data untuk di-export!");
+        return;
+    }
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFillColor(26, 93, 74);
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    // Logo text
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AUVA', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Kbihu AU - Laporan Keuangan', 105, 30, { align: 'center' });
+    
+    // Info rombongan
+    const namaGrup = prompt("Nama Rombongan untuk laporan:", "Rombongan Umroh");
+    if (!namaGrup) return;
+    
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Rombongan: ${namaGrup}`, 14, 50);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 58);
+    
+    // Hitung total
+    let masuk = 0, keluar = 0;
+    dataKas.forEach(i => {
+        if (i.tipe === 'masuk') masuk += i.nom;
+        else keluar += i.nom;
+    });
+    
+    // Summary box
+    doc.setFillColor(240, 240, 240);
+    doc.roundedRect(14, 65, 182, 25, 3, 3, 'F');
+    
+    doc.setFontSize(10);
+    doc.setTextColor(46, 204, 113);
+    doc.text(`Total Pemasukan: Rp ${masuk.toLocaleString('id-ID')}`, 20, 75);
+    doc.setTextColor(231, 76, 60);
+    doc.text(`Total Pengeluaran: Rp ${keluar.toLocaleString('id-ID')}`, 20, 82);
+    doc.setTextColor(26, 93, 74);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`SALDO AKHIR: Rp ${(masuk - keluar).toLocaleString('id-ID')}`, 110, 78);
+    
+    // Table
+    const tableData = dataKas.map(i => [
+        i.tgl,
+        i.ket,
+        i.tipe === 'masuk' ? 'MASUK' : 'KELUAR',
+        `Rp ${i.nom.toLocaleString('id-ID')}`
+    ]);
+    
+    doc.autoTable({
+        startY: 95,
+        head: [['Tanggal', 'Keterangan', 'Tipe', 'Nominal']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: {
+            fillColor: [26, 93, 74],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        columnStyles: {
+            0: { cellWidth: 30 },
+            1: { cellWidth: 'auto' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 40, halign: 'right' }
         }
     });
+    
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(128, 128, 128);
+        doc.text(`Halaman ${i} dari ${pageCount} - Auva Kbihu AU © 2026`, 105, 290, { align: 'center' });
+    }
+    
+    // Save
+    doc.save(`Laporan_${namaGrup.replace(/\s+/g, '_')}.pdf`);
+    showToast('✅ PDF berhasil di-export!');
 }
 
-function cekPIN(){
-    if(loginPin === localStorage.getItem('auva_pin')){
-        document.getElementById('loginPage').style.display='none';
-        showToast('Selamat datang di Auva!');
-    } else { 
-        showToast('PIN SALAH!');
-        loginPin = '';
-        updateLoginPinDisplay();
-        const box = document.querySelector('.login-box');
-        box.style.animation = 'shake 0.5s';
-        setTimeout(() => box.style.animation = '', 500);
-    }
-}
-
-function gantiPIN(){
-    let lama=prompt("Masukkan PIN lama:");
-    if(lama === localStorage.getItem('auva_pin')) {
-        let baru=prompt("PIN baru (4 digit):");
-        if(baru && baru.length >= 4) { 
-            localStorage.setItem('auva_pin', baru); 
-            showToast('PIN berhasil diganti!');
-        } else {
-            alert('PIN minimal 4 digit!');
-        }
-    } else { 
-        alert("PIN Lama Salah!"); 
-    }
-}
-
-function resetPIN(){
-    let master = prompt("Masukkan KODE ADMIN untuk reset (Default: 0000):");
-    if(master === "0000"){
-        let baru = prompt("Masukkan PIN Baru:");
-        if(baru){
-            localStorage.setItem('auva_pin', baru);
-            showToast('PIN berhasil direset!');
-        }
-    } else { 
-        alert("KODE ADMIN SALAH! Gagal reset."); 
-    }
-}
+// ==========================================================
 
 function openTab(t, el){
     document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
@@ -950,7 +1187,7 @@ function hapus(id){
 }
 
 function resetData() {
-    if(confirm("Sudah download Excel? Klik OK untuk mengosongkan buku kas.")) {
+    if(confirm("Sudah download Excel/PDF? Klik OK untuk mengosongkan buku kas.")) {
         dataKas = [];
         save();
         showToast('Buku kas dikosongkan');
@@ -981,17 +1218,6 @@ function downloadExcel() {
     XLSX.writeFile(wb, namaGrup + ".xlsx");
     showToast('Excel berhasil di-download!');
 }
-
-// Add shake animation
-const style = document.createElement('style');
-style.textContent = `
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
-}
-`;
-document.head.appendChild(style);
 </script>
 </body>
-    </html>
+</html>
