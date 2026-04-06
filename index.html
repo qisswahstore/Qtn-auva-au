@@ -187,7 +187,7 @@
             </tr></thead>
             <tbody id="bodyKas"></tbody>
         </table>
-    </div><div id="hasilWA" class="res-card"></div><div class="section-title">Backup & Restore Data Kas</div><div class="backup-info"><i class="fas fa-info-circle"></i> Backup & Restore data transaksi kas</div><div class="row"><button class="btn btn-blue btn-small" onclick="backupKasData()" style="flex:1"><i class="fas fa-download"></i> BACKUP KAS</button><button class="btn btn-orange btn-small" onclick="document.getElementById('restoreKasFile').click()" style="flex:1"><i class="fas fa-upload"></i> RESTORE KAS</button></div><input type="file" id="restoreKasFile" accept=".json" style="display:none" onchange="restoreKasData(this)"><div class="section-title">Export Laporan Kas</div><div class="row"><button class="btn btn-purple btn-small" onclick="exportKasPDFWithSpinner()" style="flex:1"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-small" onclick="exportKasExcelWithSpinner()" style="flex:1; background:#27ae60;"><i class="fas fa-file-excel"></i> EXCEL</button></div><button class="btn btn-danger" onclick="confirmResetKas()" style="font-size:12px"><i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS</button></div></div>
+    </div><div id="hasilWA" class="res-card"></div><div class="section-title">Backup & Restore Data Kas</div><div class="backup-info"><i class="fas fa-info-circle"></i> Backup & Restore data transaksi kas</div><div class="row"><button class="btn btn-blue btn-small" onclick="backupKasData()" style="flex:1"><i class="fas fa-download"></i> BACKUP KAS</button><button class="btn btn-orange btn-small" onclick="document.getElementById('restoreKasFile').click()" style="flex:1"><i class="fas fa-upload"></i> RESTORE KAS</button></div><input type="file" id="restoreKasFile" accept=".json" style="display:none" onchange="restoreKasData(this)"><div class="section-title">Export Laporan Kas</div><div class="row"><button class="btn btn-purple btn-small" onclick="exportKasPDF()" style="flex:1"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-small" onclick="exportKasExcel()" style="flex:1; background:#27ae60;"><i class="fas fa-file-excel"></i> EXCEL</button></div><button class="btn btn-danger" onclick="confirmResetKas()" style="font-size:12px"><i class="fas fa-trash-alt"></i> KOSONGKAN BUKU KAS</button></div></div>
 
     <div id="page-jamaah" class="page"><div class="page-header"><button class="back-btn" onclick="showPage('home')">←</button><h2>Data Jamaah</h2><div style="width:40px;"></div></div><div class="card"><div id="jamaahAdminPanel" class="admin-panel" style="display:none"><h3>🔧 Panel Admin Jamaah</h3><button class="btn-admin" onclick="openTambahJamaahModal()">📝 + Tambah Data Jamaah</button><button class="btn-admin" onclick="openManageFieldsModal()">⚙️ Kelola Field Dinamis</button><button class="btn-admin" onclick="exportJamaahToExcel()">📊 Export ke Excel</button><button class="btn-admin" onclick="document.getElementById('importExcelFile').click()">📥 IMPORT EXCEL</button><input type="file" id="importExcelFile" accept=".xlsx,.xls" style="display:none" onchange="importJamaahFromExcel(this)"><button class="btn-admin btn-delete-all" onclick="confirmDeleteAllJamaah()">🗑️ HAPUS SEMUA DATA JAMAAH</button></div><div class="section-title">DAFTAR JAMAAH</div>
         <div class="search-box"><input type="text" id="searchJamaahInput" placeholder="🔍 Cari nama jamaah..." onkeyup="filterJamaahList()"><select id="sortJamaahSelect" onchange="sortJamaahList()"><option value="urutan_asli">Urutan asli (sesuai input)</option><option value="nama_asc">Nama A-Z</option><option value="nama_desc">Nama Z-A</option><option value="tgl_asc">Tanggal lama ke baru</option><option value="tgl_desc">Tanggal baru ke lama</option></select><button onclick="resetJamaahFilter()">Reset</button></div>
@@ -224,7 +224,7 @@
     <div class="bottom-nav"><div class="nav-item nav-active" onclick="showPage('home')">🏠<br>Home</div><div class="nav-item" onclick="showPage('estimasi')">📊<br>Estimasi</div><div class="nav-item" onclick="showPage('kas')">💰<br>Kas</div><div class="nav-item" onclick="showPage('jamaah')">👥<br>Jamaah</div><div class="nav-item" onclick="showPage('setting')">⚙️<br>Setting</div></div>
 
 <script>
-const SW_CODE_STABLE = `const CACHE_NAME='auva-v18';const STATIC_ASSETS=['/','https://fonts.googleapis.com/css2?family=Amiri&family=Segoe+UI&display=swap','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css','https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js','https://img.icons8.com/color/96/kaaba.png'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(async c=>{try{await c.addAll(STATIC_ASSETS);}catch(e){}}));self.skipWaiting();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;if(e.request.url.startsWith('chrome-extension://'))return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).catch(()=>new Response('Offline mode'))));});`;
+const SW_CODE_STABLE = `const CACHE_NAME='auva-v19';const STATIC_ASSETS=['/','https://fonts.googleapis.com/css2?family=Amiri&family=Segoe+UI&display=swap','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css','https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js','https://img.icons8.com/color/96/kaaba.png'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(async c=>{try{await c.addAll(STATIC_ASSETS);}catch(e){}}));self.skipWaiting();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;if(e.request.url.startsWith('chrome-extension://'))return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).catch(()=>new Response('Offline mode'))));});`;
 function registerServiceWorker() { if(!('serviceWorker' in navigator)) return; const blob = new Blob([SW_CODE_STABLE], { type:'application/javascript' }); navigator.serviceWorker.register(URL.createObjectURL(blob), { scope:'/' }).catch(e=>console.log(e)); }
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', registerServiceWorker); else registerServiceWorker();
 
@@ -423,53 +423,107 @@ function buatLaporanWA() { if(dataKas.length===0) { const hw = document.getEleme
 function salinLaporanWA() { if(lastWAText) navigator.clipboard.writeText(lastWAText).then(()=>showToast("✅ Laporan tersalin!")); else showToast('Buat laporan dulu!'); }
 function backupKasData() { if(dataKas.length===0) return showAlert("Tidak ada data!"); const backup={ app:"Auva Kbihu AU - Kas", version:"1.0", created:new Date().toISOString(), kegiatan:document.getElementById('kegiatan').value, data:dataKas }; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'})); a.download=`Auva_Kas_Backup_${new Date().toLocaleDateString('id-ID').replace(/\//g,'-')}.json`; a.click(); showToast('Backup kas berhasil'); }
 function restoreKasData(input) { const file=input.files[0]; if(!file) return; input.value=''; showConfirm("Timpa data kas yang ada?", (confirmed)=>{ if(confirmed) { const reader=new FileReader(); reader.onload=e=>{ try{ const backup=JSON.parse(e.target.result); if(backup.data && Array.isArray(backup.data)){ dataKas=backup.data; if(backup.kegiatan) document.getElementById('kegiatan').value=backup.kegiatan; saveKasData(); showToast(`Restore ${dataKas.length} transaksi berhasil`); } else showAlert("File backup tidak valid!"); } catch(err){ showAlert("File backup tidak valid!"); } }; reader.readAsText(file); } }); }
-function exportKasPDFWithSpinner() {
+
+// PERBAIKAN: EXPORT PDF KAS (PAKAI AUTOTABLE, PASTI JALAN)
+function exportKasPDF() {
+    if(dataKas.length===0) { showAlert("Tidak ada data!"); return; }
     showSpinner();
     setTimeout(() => {
         try {
-            if(dataKas.length===0) { showAlert("Tidak ada data!"); hideSpinner(); return; }
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFillColor(26,93,74); doc.rect(0,0,210,40,'F');
-            doc.setTextColor(255,255,255); doc.setFontSize(20);
             const judul = document.getElementById('kegiatan').value.trim() || "Laporan Kas";
-            doc.text(`${judul} - LAPORAN KAS`,105,25,{align:'center'});
-            doc.setTextColor(0,0,0); doc.setFontSize(10);
-            doc.text(`Kegiatan: ${judul}`,14,50); doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`,14,58);
-            let masuk=0, keluar=0; dataKas.forEach(i=>{ if(i.tipe==='masuk') masuk+=i.nom; else keluar+=i.nom; });
-            const tableData = dataKas.map(i=>[i.tgl,i.kegiatan||'-',i.ket,i.tipe==='masuk'?'MASUK':'KELUAR',`Rp ${i.nom.toLocaleString('id-ID')}`]);
-            doc.autoTable({startY:70,head:[['Tgl','Kegiatan','Ket','Tipe','Nominal']],body:tableData,theme:'striped',headStyles:{fillColor:[26,93,74]},styles:{fontSize:8}});
+            
+            // Header
+            doc.setFillColor(26,93,74);
+            doc.rect(0,0,210,40,'F');
+            doc.setTextColor(255,255,255);
+            doc.setFontSize(18);
+            doc.text(judul + " - LAPORAN KAS", 105, 25, { align: 'center' });
+            
+            // Informasi
+            doc.setTextColor(0,0,0);
+            doc.setFontSize(10);
+            doc.text(`Kegiatan: ${judul}`, 14, 50);
+            doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 14, 58);
+            
+            // Hitung total
+            let masuk = 0, keluar = 0;
+            dataKas.forEach(i => { if(i.tipe === 'masuk') masuk += i.nom; else keluar += i.nom; });
+            
+            // Data tabel
+            const tableData = dataKas.map(i => [
+                i.tgl,
+                i.kegiatan || '-',
+                i.ket,
+                i.tipe === 'masuk' ? 'MASUK' : 'KELUAR',
+                'Rp ' + i.nom.toLocaleString('id-ID')
+            ]);
+            
+            // Buat tabel
+            doc.autoTable({
+                startY: 70,
+                head: [['Tgl', 'Kegiatan', 'Keterangan', 'Tipe', 'Nominal']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: { fillColor: [26,93,74], textColor: [255,255,255], fontSize: 10 },
+                styles: { fontSize: 8, cellPadding: 3 },
+                margin: { left: 14, right: 14 }
+            });
+            
             let MobileY = doc.lastAutoTable.MobileY + 10;
-            doc.setFontSize(10); doc.setFont('helvetica','bold');
-            doc.text(`Total Pemasukan: Rp ${masuk.toLocaleString('id-ID')}`,14,MobileY);
-            doc.text(`Total Pengeluaran: Rp ${keluar.toLocaleString('id-ID')}`,14,MobileY+8);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Total Pemasukan: Rp ${masuk.toLocaleString('id-ID')}`, 14, MobileY);
+            doc.text(`Total Pengeluaran: Rp ${keluar.toLocaleString('id-ID')}`, 14, MobileY + 8);
             doc.setTextColor(26,93,74);
-            doc.text(`SALDO AKHIR: Rp ${(masuk-keluar).toLocaleString('id-ID')}`,14,MobileY+16);
-            doc.save(`${judul.replace(/\s+/g,'_')}_Laporan_Kas.pdf`);
+            doc.text(`SALDO AKHIR: Rp ${(masuk - keluar).toLocaleString('id-ID')}`, 14, MobileY + 16);
+            
+            doc.save(`${judul.replace(/\s+/g, '_')}_Laporan_Kas.pdf`);
             showToast('PDF berhasil di-export');
-        } catch(e) { showAlert('Gagal export PDF: '+e.message); }
+        } catch(e) {
+            console.error(e);
+            showAlert('Gagal export PDF: ' + e.message);
+        }
         hideSpinner();
-    }, 100);
+    }, 50);
 }
-function exportKasExcelWithSpinner() {
+
+// PERBAIKAN: EXPORT EXCEL KAS (DENGAN TOTAL)
+function exportKasExcel() {
+    if(dataKas.length===0) { showAlert("Tidak ada data!"); return; }
     showSpinner();
     setTimeout(() => {
         try {
-            if(dataKas.length===0) { showAlert("Tidak ada data!"); hideSpinner(); return; }
             const judul = document.getElementById('kegiatan').value.trim() || "Laporan_Kas";
-            let masuk=0, keluar=0;
-            dataKas.forEach(i=>{ if(i.tipe==='masuk') masuk+=i.nom; else keluar+=i.nom; });
-            const wsData = dataKas.map(i=>({ Tanggal:i.tgl, Kegiatan:i.kegiatan, Keterangan:i.ket, Tipe:i.tipe.toUpperCase(), Nominal:i.nom }));
-            wsData.push({ Tanggal:'', Kegiatan:'', Keterangan:'TOTAL PEMASUKAN', Tipe:'', Nominal:masuk });
-            wsData.push({ Tanggal:'', Kegiatan:'', Keterangan:'TOTAL PENGELUARAN', Tipe:'', Nominal:keluar });
-            wsData.push({ Tanggal:'', Kegiatan:'', Keterangan:'SALDO AKHIR', Tipe:'', Nominal:masuk-keluar });
+            let masuk = 0, keluar = 0;
+            dataKas.forEach(i => { if(i.tipe === 'masuk') masuk += i.nom; else keluar += i.nom; });
+            
+            const wsData = dataKas.map(i => ({
+                Tanggal: i.tgl,
+                Kegiatan: i.kegiatan,
+                Keterangan: i.ket,
+                Tipe: i.tipe.toUpperCase(),
+                Nominal: i.nom
+            }));
+            
+            // Tambah baris total
+            wsData.push({ Tanggal: '', Kegiatan: '', Keterangan: 'TOTAL PEMASUKAN', Tipe: '', Nominal: masuk });
+            wsData.push({ Tanggal: '', Kegiatan: '', Keterangan: 'TOTAL PENGELUARAN', Tipe: '', Nominal: keluar });
+            wsData.push({ Tanggal: '', Kegiatan: '', Keterangan: 'SALDO AKHIR', Tipe: '', Nominal: masuk - keluar });
+            
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(wsData), "Transaksi Kas");
-            XLSX.writeFile(wb, `${judul.replace(/\s+/g,'_')}.xlsx`);
+            const ws = XLSX.utils.json_to_sheet(wsData);
+            // Atur lebar kolom
+            ws['!cols'] = [{wch:12},{wch:15},{wch:25},{wch:10},{wch:15}];
+            XLSX.utils.book_append_sheet(wb, ws, "Transaksi Kas");
+            XLSX.writeFile(wb, `${judul.replace(/\s+/g, '_')}.xlsx`);
             showToast('Excel berhasil di-export (sudah ada total)');
-        } catch(e) { showAlert('Gagal export Excel: '+e.message); }
+        } catch(e) {
+            showAlert('Gagal export Excel: ' + e.message);
+        }
         hideSpinner();
-    }, 100);
+    }, 50);
 }
 
 // ==================== DATA JAMAAH ====================
